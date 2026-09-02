@@ -1,0 +1,175 @@
+﻿barrier_id,zone_id,road_name,road_class,highway,latitude,longitude,merged_tracks_count
+BLOQ_001,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,residential,-22.826005,-47.527493,2
+BLOQ_002,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.824479,-47.541485,2
+BLOQ_003,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Secundária / Coletora,tertiary,-22.820339,-47.551031,2
+BLOQ_004,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.814268,-47.558779,2
+BLOQ_005,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.812026,-47.499203,2
+BLOQ_006,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.801588,-47.493145,2
+BLOQ_007,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.783224,-47.56821,4
+BLOQ_008,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,residential,-22.782783,-47.568131,4
+BLOQ_009,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.782913,-47.491848,2
+BLOQ_010,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.772557,-47.564082,2
+BLOQ_011,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.769525,-47.562062,2
+BLOQ_012,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.766915,-47.559914,2
+BLOQ_013,ZONA_01,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.768,-47.499157,2
+BLOQ_014,ZONA_01,Estrada Municipal Vicente Bellini,Estrada Municipal / Acesso Local,unclassified,-22.76654,-47.559589,2
+BLOQ_015,ZONA_01,Estrada do Povoador,Estrada Municipal / Acesso Local,unclassified,-22.763034,-47.504159,2
+BLOQ_016,ZONA_01,Estrada Municipal Santa Isabel,Estrada Municipal / Acesso Local,residential,-22.753903,-47.529433,2
+BLOQ_017,ZONA_02,Rua João da Cunha Raposo,Estrada Municipal / Acesso Local,residential,-22.761091,-47.625781,1
+BLOQ_018,ZONA_02,Rua João Monteiro,Estrada Municipal / Acesso Local,residential,-22.761055,-47.624261,2
+BLOQ_019,ZONA_02,Rua José Mendes,Estrada Municipal / Acesso Local,residential,-22.761043,-47.623835,2
+BLOQ_020,ZONA_02,Avenida Luiz Pereira Leite,Estrada Secundária / Coletora,tertiary,-22.760923,-47.628488,4
+BLOQ_021,ZONA_02,"Rua Theresinha Etter do Valle Pavan, Rua José Detoni",Estrada Municipal / Acesso Local,residential,-22.76053,-47.631642,2
+BLOQ_022,ZONA_02,Rua Ronaldo Andrioli,Estrada Municipal / Acesso Local,residential,-22.760651,-47.630853,2
+BLOQ_023,ZONA_02,Rua Moysés de Castro,Estrada Municipal / Acesso Local,residential,-22.760769,-47.63009,2
+BLOQ_024,ZONA_02,Rua Antonio Tomazella,Estrada Municipal / Acesso Local,residential,-22.760042,-47.634215,2
+BLOQ_025,ZONA_02,Rua Antonio Carlos Pedroso,Estrada Municipal / Acesso Local,residential,-22.759781,-47.635261,4
+BLOQ_026,ZONA_02,Rua Selma Gambaro Trevisan,Estrada Municipal / Acesso Local,residential,-22.760875,-47.629264,2
+BLOQ_027,ZONA_02,Rua Maria Ferraz de Toledo Braga,Estrada Municipal / Acesso Local,residential,-22.760633,-47.618948,2
+BLOQ_028,ZONA_02,Rua Pedro Eusebio Stocco,Estrada Municipal / Acesso Local,residential,-22.760718,-47.619659,2
+BLOQ_029,ZONA_02,Rua Cláudio Roberto Dal Piccolo,Estrada Municipal / Acesso Local,residential,-22.76083,-47.620582,3
+BLOQ_030,ZONA_02,Rua Nair Bertolotti Stocco,Estrada Municipal / Acesso Local,residential,-22.760986,-47.621893,2
+BLOQ_031,ZONA_02,Rua Nair Bertolotti Stocco,Estrada Municipal / Acesso Local,residential,-22.760547,-47.618242,2
+BLOQ_032,ZONA_02,Rua Mauro Gonçalves,Estrada Secundária / Coletora,tertiary,-22.760287,-47.616962,2
+BLOQ_033,ZONA_02,Rua Raul Seixas,Estrada Municipal / Acesso Local,residential,-22.760003,-47.615643,2
+BLOQ_034,ZONA_02,Rua Rodolfo Mayer,Estrada Municipal / Acesso Local,residential,-22.759886,-47.615098,1
+BLOQ_035,ZONA_02,Rua Elis Regina,Estrada Municipal / Acesso Local,residential,-22.759662,-47.61415,2
+BLOQ_036,ZONA_02,Avenida Rio das Pedras,Estrada Secundária / Coletora,tertiary,-22.759307,-47.613018,2
+BLOQ_037,ZONA_02,Rua Clara Nunes,Estrada Secundária / Coletora,tertiary,-22.758914,-47.611764,2
+BLOQ_038,ZONA_02,Rua Cassiano Gabus Mendes,Estrada Municipal / Acesso Local,residential,-22.758374,-47.610219,3
+BLOQ_039,ZONA_02,Rua Armando Bogus,Estrada Municipal / Acesso Local,residential,-22.758754,-47.611256,2
+BLOQ_040,ZONA_02,"Rua Leila Diniz, Rua Lauro Corona",Estrada Municipal / Acesso Local,residential,-22.757112,-47.607217,2
+BLOQ_041,ZONA_02,Rua Ferraz de Vasconcelos,Estrada Municipal / Acesso Local,residential,-22.757707,-47.608626,2
+BLOQ_042,ZONA_02,Rua Yara Amaral,Estrada Municipal / Acesso Local,residential,-22.758,-47.609325,2
+BLOQ_043,ZONA_02,Avenida Pompéia,Estrada Secundária / Coletora,secondary,-22.756594,-47.606247,2
+BLOQ_044,ZONA_02,Rua João Tedesco,Estrada Municipal / Acesso Local,residential,-22.760996,-47.622211,2
+BLOQ_045,ZONA_02,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.751583,-47.598717,3
+BLOQ_046,ZONA_02,Rodovia do Açúcar,Rodovia Principal / Federal / Estadual,motorway,-22.75133,-47.598405,2
+BLOQ_047,ZONA_02,Avenida Doutor Alexandre Guimarães dos Santos,Estrada Municipal / Acesso Local,unclassified,-22.751084,-47.598103,2
+BLOQ_048,ZONA_02,Rua Doutor Alexandre Guimarães dos Santos,Estrada Municipal / Acesso Local,residential,-22.749024,-47.595992,2
+BLOQ_049,ZONA_02,Estrada Genoveva Nasato Formággio,Estrada Secundária / Coletora,tertiary,-22.745695,-47.593117,2
+BLOQ_050,ZONA_02,Rua Baptista Formaggio,Estrada Municipal / Acesso Local,residential,-22.744953,-47.5926,2
+BLOQ_051,ZONA_02,Rua Maria Pereira da Silva Oliveira,Estrada Municipal / Acesso Local,residential,-22.744197,-47.592092,4
+BLOQ_052,ZONA_02,Rua Rosalpina,Estrada Municipal / Acesso Local,residential,-22.743083,-47.591344,2
+BLOQ_053,ZONA_02,Rua Dona Dinah Ferraz Bacchi,Estrada Municipal / Acesso Local,residential,-22.741021,-47.590174,2
+BLOQ_054,ZONA_02,Avenida Dois Córregos,Estrada Municipal / Acesso Local,residential,-22.740764,-47.590037,2
+BLOQ_055,ZONA_02,Rodovia Margarida das Graças Martins,Rodovia Principal / Federal / Estadual,primary,-22.739146,-47.589206,2
+BLOQ_056,ZONA_02,Rua Antônio Alcântara Machado,Estrada Municipal / Acesso Local,residential,-22.756514,-47.643979,4
+BLOQ_057,ZONA_02,Rua Antonio Bacchi,Estrada Municipal / Acesso Local,residential,-22.755679,-47.64543,4
+BLOQ_058,ZONA_02,Avenida São Paulo,Rodovia Principal / Federal / Estadual,primary,-22.754592,-47.647287,1
+BLOQ_059,ZONA_02,Rua Pacaembu,Estrada Municipal / Acesso Local,residential,-22.752444,-47.650282,2
+BLOQ_060,ZONA_02,Avenida Raposo Tavares,Rodovia Principal / Federal / Estadual,primary,-22.75186,-47.650952,2
+BLOQ_061,ZONA_02,Rua Dona Stella,Estrada Municipal / Acesso Local,residential,-22.751633,-47.651213,1
+BLOQ_062,ZONA_02,Rua Otávio Mangabeira,Estrada Municipal / Acesso Local,residential,-22.751215,-47.651692,1
+BLOQ_063,ZONA_02,Rua André Kerekes,Estrada Municipal / Acesso Local,residential,-22.750827,-47.652138,1
+BLOQ_064,ZONA_02,Rua Ingá,Estrada Municipal / Acesso Local,residential,-22.750424,-47.6526,1
+BLOQ_065,ZONA_02,Rua Monte Pascoal,Estrada Municipal / Acesso Local,residential,-22.749768,-47.653291,1
+BLOQ_066,ZONA_02,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.731479,-47.586755,2
+BLOQ_067,ZONA_02,Avenida Comendador Leopoldo Dedini,Estrada Secundária / Coletora,secondary,-22.728277,-47.586277,1
+BLOQ_068,ZONA_02,Avenida Comendador Leopoldo Dedini,Estrada Secundária / Coletora,secondary,-22.727769,-47.586241,1
+BLOQ_069,ZONA_02,Rodovia Luiz de Queiroz,Rodovia Principal / Federal / Estadual,motorway,-22.723889,-47.586147,2
+BLOQ_070,ZONA_02,Rodovia Luiz de Queiroz,Rodovia Principal / Federal / Estadual,motorway,-22.723595,-47.586157,2
+BLOQ_071,ZONA_02,Rua Giovanni Michielon,Estrada Municipal / Acesso Local,residential,-22.703914,-47.59133,4
+BLOQ_072,ZONA_02,Rodovia Ernesto Paterniani,Rodovia Principal / Federal / Estadual,motorway,-22.683193,-47.595586,2
+BLOQ_073,ZONA_02,Estrada Sem Nome / Acesso Rural,Rodovia Principal / Federal / Estadual,motorway_link,-22.682735,-47.59587,1
+BLOQ_074,ZONA_02,Estrada Sem Nome / Acesso Rural,Rodovia Principal / Federal / Estadual,motorway_link,-22.681936,-47.596366,1
+BLOQ_075,ZONA_02,Travessa José Ronco,Estrada Municipal / Acesso Local,residential,-22.703436,-47.591296,4
+BLOQ_076,ZONA_02,Rodovia Deputado Laércio Corte,Rodovia Principal / Federal / Estadual,motorway,-22.695403,-47.591453,1
+BLOQ_077,ZONA_02,Rodovia Deputado Laércio Corte,Rodovia Principal / Federal / Estadual,motorway,-22.695724,-47.591408,1
+BLOQ_078,ZONA_02,Rodovia Fausto Santomauro,Rodovia Principal / Federal / Estadual,motorway,-22.66523,-47.619702,2
+BLOQ_079,ZONA_02,Estrada Heribaldo Zardetto de Toledo,Estrada Municipal / Acesso Local,unclassified,-22.664485,-47.636972,2
+BLOQ_080,ZONA_02,Avenida Francisco Luiz Rasera,Estrada Secundária / Coletora,tertiary,-22.759442,-47.636617,2
+BLOQ_081,ZONA_02,Rua Odete Fessel,Estrada Municipal / Acesso Local,residential,-22.758457,-47.639522,4
+BLOQ_082,ZONA_02,Rua Emílio Reynaldo Adamoli,Estrada Municipal / Acesso Local,residential,-22.75921,-47.637374,2
+BLOQ_083,ZONA_02,Rua Amadeu Alves,Estrada Municipal / Acesso Local,residential,-22.758717,-47.638781,2
+BLOQ_084,ZONA_02,Rua Bernardo Queiroga,Estrada Municipal / Acesso Local,residential,-22.758115,-47.640499,2
+BLOQ_085,ZONA_02,Rua General Câmara,Estrada Municipal / Acesso Local,residential,-22.757515,-47.641812,3
+BLOQ_086,ZONA_02,Avenida Comendador Luciano Guidotti,Estrada Secundária / Coletora,secondary,-22.757131,-47.642649,1
+BLOQ_087,ZONA_02,Rua Frei Paulo de Sorocaba,Estrada Municipal / Acesso Local,residential,-22.756098,-47.644704,2
+BLOQ_088,ZONA_02,Avenida 31 de Março,Rodovia Principal / Federal / Estadual,primary,-22.756942,-47.643062,1
+BLOQ_089,ZONA_02,Rua Pietro Coffani,Estrada Municipal / Acesso Local,residential,-22.755776,-47.645262,2
+BLOQ_090,ZONA_02,Avenida São Paulo,Rodovia Principal / Federal / Estadual,primary,-22.754382,-47.64758,1
+BLOQ_091,ZONA_02,Rua Marilice Rodrigues da Silva Pinto,Estrada Municipal / Acesso Local,residential,-22.75402,-47.648088,2
+BLOQ_092,ZONA_02,Rua Pindorama,Estrada Municipal / Acesso Local,residential,-22.753132,-47.649332,2
+BLOQ_093,ZONA_02,Rua Bogotá,Estrada Municipal / Acesso Local,residential,-22.749535,-47.653511,2
+BLOQ_094,ZONA_02,Rua Infante Dom Henrique,Estrada Municipal / Acesso Local,residential,-22.748278,-47.654695,2
+BLOQ_095,ZONA_02,Rua Iguatemi,Estrada Municipal / Acesso Local,residential,-22.747553,-47.655379,2
+BLOQ_096,ZONA_02,Rua Dom Manoel,Estrada Municipal / Acesso Local,residential,-22.747017,-47.655818,2
+BLOQ_097,ZONA_02,Travessa Salvador,Estrada Municipal / Acesso Local,residential,-22.743472,-47.658391,2
+BLOQ_098,ZONA_02,Rua Kurt Nimuendajú,Estrada Municipal / Acesso Local,residential,-22.742906,-47.658742,2
+BLOQ_099,ZONA_02,Rua Benjamin Constant,Estrada Secundária / Coletora,tertiary,-22.74601,-47.656593,2
+BLOQ_100,ZONA_02,Rua Enxofre,Estrada Municipal / Acesso Local,residential,-22.744064,-47.658024,4
+BLOQ_101,ZONA_02,Rua Baronesa de Rezende,Estrada Municipal / Acesso Local,residential,-22.739711,-47.662099,2
+BLOQ_102,ZONA_02,Avenida Madre Maria Teodora,Estrada Secundária / Coletora,tertiary,-22.739111,-47.662958,1
+BLOQ_103,ZONA_02,Rua Professor Antonio Pinto de Almeida Ferraz,Estrada Municipal / Acesso Local,residential,-22.738577,-47.663705,2
+BLOQ_104,ZONA_02,Rua Professor Raul Duarte,Estrada Municipal / Acesso Local,residential,-22.738126,-47.664336,1
+BLOQ_105,ZONA_02,Avenida Presidente Vargas,Estrada Secundária / Coletora,tertiary,-22.737758,-47.664852,2
+BLOQ_106,ZONA_02,Rua Professor Hildebrando Seixas Siqueira,Estrada Municipal / Acesso Local,residential,-22.7358,-47.667165,2
+BLOQ_107,ZONA_02,Rua Pedro Barboza - Pedrão,Estrada Municipal / Acesso Local,residential,-22.736101,-47.66682,2
+BLOQ_108,ZONA_02,Travessa Colômbia,Estrada Municipal / Acesso Local,residential,-22.735412,-47.66761,2
+BLOQ_109,ZONA_02,Rua Pedro Morato Krahembuhl,Estrada Municipal / Acesso Local,residential,-22.734259,-47.668768,2
+BLOQ_110,ZONA_02,Rua dos Patriotas,Estrada Municipal / Acesso Local,residential,-22.733541,-47.669444,2
+BLOQ_111,ZONA_02,Rua Jornalista Breno Silveira,Estrada Municipal / Acesso Local,residential,-22.734706,-47.668346,2
+BLOQ_112,ZONA_02,Rua Rafael Marques Coutinho,Estrada Municipal / Acesso Local,residential,-22.733156,-47.669807,2
+BLOQ_113,ZONA_02,Avenida Nove de Julho,Estrada Secundária / Coletora,tertiary,-22.732513,-47.670413,2
+BLOQ_114,ZONA_02,Rua Doutor Otávio Martins de Toledo,Estrada Municipal / Acesso Local,residential,-22.732284,-47.670609,1
+BLOQ_115,ZONA_02,Rua Abel Francisco Pereira,Estrada Secundária / Coletora,secondary,-22.730465,-47.672009,2
+BLOQ_116,ZONA_02,Avenida Ruy Teixeira Mendes,Estrada Secundária / Coletora,secondary,-22.729707,-47.672592,1
+BLOQ_117,ZONA_02,Alameda Carolina Mendes Thame,Estrada Municipal / Acesso Local,residential,-22.728479,-47.673382,1
+BLOQ_118,ZONA_02,Alameda Alcindo Lopes Lucas,Estrada Municipal / Acesso Local,residential,-22.727852,-47.673771,1
+BLOQ_119,ZONA_02,Rua 23 de Maio,Estrada Municipal / Acesso Local,residential,-22.74152,-47.659601,1
+BLOQ_120,ZONA_02,Rua João Crisóstomo,Estrada Municipal / Acesso Local,residential,-22.741183,-47.659775,3
+BLOQ_121,ZONA_02,Rua MMDC,Estrada Municipal / Acesso Local,residential,-22.740439,-47.66084,3
+BLOQ_122,ZONA_02,Rua Professor Odilon Nogueira,Estrada Municipal / Acesso Local,residential,-22.737314,-47.665428,2
+BLOQ_123,ZONA_02,Rua Professor José Martins de Toledo,Estrada Municipal / Acesso Local,residential,-22.738842,-47.663333,1
+BLOQ_124,ZONA_02,Rua José Rosário Losso,Estrada Municipal / Acesso Local,residential,-22.736932,-47.665866,2
+BLOQ_125,ZONA_02,Avenida dos Marins,Estrada Secundária / Coletora,tertiary,-22.724031,-47.675817,4
+BLOQ_126,ZONA_02,Rua Curitiba,Estrada Municipal / Acesso Local,residential,-22.719531,-47.677517,2
+BLOQ_127,ZONA_02,Rua Aracaju,Estrada Municipal / Acesso Local,residential,-22.714115,-47.678617,2
+BLOQ_128,ZONA_02,Rua dos Dourados,Estrada Municipal / Acesso Local,residential,-22.709357,-47.678906,2
+BLOQ_129,ZONA_02,Avenida Manoel Beloto,Estrada Municipal / Acesso Local,residential,-22.701097,-47.677665,2
+BLOQ_130,ZONA_02,Avenida das Ondas,Estrada Municipal / Acesso Local,residential,-22.697734,-47.676551,2
+BLOQ_131,ZONA_02,"Rua Orlando Moreto, Rua Milton Cullen Ferguson",Estrada Municipal / Acesso Local,residential,-22.692105,-47.673774,2
+BLOQ_132,ZONA_02,Avenida Cristóvão Colombo,Estrada Secundária / Coletora,secondary,-22.691183,-47.673154,2
+BLOQ_133,ZONA_02,Rua Claudelis Aparecida Nolasco,Estrada Municipal / Acesso Local,residential,-22.689937,-47.672316,2
+BLOQ_134,ZONA_02,Rua dos Trevos,Estrada Municipal / Acesso Local,residential,-22.696185,-47.675919,2
+BLOQ_135,ZONA_02,Rua dos Trevos,Estrada Municipal / Acesso Local,residential,-22.695347,-47.675547,2
+BLOQ_136,ZONA_02,Rodovia Geraldo de Barros,Rodovia Principal / Federal / Estadual,trunk,-22.687185,-47.670115,2
+BLOQ_137,ZONA_02,Rua João Antonio Franco,Estrada Municipal / Acesso Local,residential,-22.691408,-47.673305,2
+BLOQ_138,ZONA_02,Rua Doutor Vicente de Oliveira,Estrada Municipal / Acesso Local,residential,-22.688807,-47.671461,2
+BLOQ_139,ZONA_02,Rua Luiz Poppin,Estrada Municipal / Acesso Local,residential,-22.687377,-47.670274,1
+BLOQ_140,ZONA_02,Rua Luiz Gonzaga Barbosa Lima,Estrada Municipal / Acesso Local,residential,-22.688358,-47.671088,2
+BLOQ_141,ZONA_02,Rua Doutor Antonio Meira de Barros,Estrada Municipal / Acesso Local,residential,-22.687892,-47.670702,2
+BLOQ_142,ZONA_02,Rua Antônio Reinaldo Zanin,Estrada Municipal / Acesso Local,residential,-22.685031,-47.66804,1
+BLOQ_143,ZONA_02,Avenida Brasília,Estrada Municipal / Acesso Local,residential,-22.684387,-47.667389,1
+BLOQ_144,ZONA_02,Rua Doutor Sebastião Nogueira de Lima,Estrada Municipal / Acesso Local,residential,-22.683948,-47.666928,2
+BLOQ_145,ZONA_02,Rua Arthur Paulo Furlan,Estrada Municipal / Acesso Local,residential,-22.683554,-47.666442,2
+BLOQ_146,ZONA_02,Avenida Francisco Álvarez,Estrada Municipal / Acesso Local,residential,-22.68243,-47.665058,2
+BLOQ_147,ZONA_02,Rua Anisio Ribeiro de Lima,Estrada Municipal / Acesso Local,residential,-22.681802,-47.664283,2
+BLOQ_148,ZONA_02,Rua Jayme Pinheiro de Ulhoa Cintra,Estrada Municipal / Acesso Local,residential,-22.682115,-47.664669,2
+BLOQ_149,ZONA_02,Rua Nadir Eraldo Stella,Estrada Municipal / Acesso Local,residential,-22.680433,-47.662647,2
+BLOQ_150,ZONA_02,Rua Olga Pagotto Santiago,Estrada Municipal / Acesso Local,residential,-22.678847,-47.661493,4
+BLOQ_151,ZONA_02,Rua Jacinto Roberto Penedo,Estrada Municipal / Acesso Local,residential,-22.678356,-47.661085,1
+BLOQ_152,ZONA_02,Rua Lázara Maria Oliveira,Estrada Municipal / Acesso Local,residential,-22.67677,-47.659769,2
+BLOQ_153,ZONA_02,Rua Rafael Bachega,Estrada Municipal / Acesso Local,residential,-22.677954,-47.660751,2
+BLOQ_154,ZONA_02,Rua Francisco Maiolino,Estrada Municipal / Acesso Local,residential,-22.677562,-47.660426,2
+BLOQ_155,ZONA_02,Rua Lourdes Brandini do Prado,Estrada Municipal / Acesso Local,residential,-22.677166,-47.660098,2
+BLOQ_156,ZONA_02,Rua Josaphat Gomes de Oliveira,Estrada Municipal / Acesso Local,residential,-22.675647,-47.658663,2
+BLOQ_157,ZONA_02,Rua Luiz Tozzi,Estrada Municipal / Acesso Local,residential,-22.676046,-47.659066,2
+BLOQ_158,ZONA_02,Rua Helena Ortis de Camargo Cobra,Estrada Municipal / Acesso Local,residential,-22.675283,-47.658294,2
+BLOQ_159,ZONA_02,Rua Enoque Grisotto,Estrada Municipal / Acesso Local,residential,-22.673086,-47.655864,2
+BLOQ_160,ZONA_02,"Rua Pedro Cobra, Rua Elpídio Rufine",Estrada Municipal / Acesso Local,residential,-22.672756,-47.655458,2
+BLOQ_161,ZONA_02,Avenida Professora Nair Azzi Pitta,Estrada Municipal / Acesso Local,residential,-22.672567,-47.655224,2
+BLOQ_162,ZONA_02,Rua Maria Olimpia Pereira da Silva,Estrada Municipal / Acesso Local,residential,-22.676399,-47.659424,2
+BLOQ_163,ZONA_02,Rua João Baptista Marçal,Estrada Municipal / Acesso Local,residential,-22.674065,-47.657062,2
+BLOQ_164,ZONA_02,Rua Doutor Argemiro Frota,Estrada Municipal / Acesso Local,residential,-22.674409,-47.657409,2
+BLOQ_165,ZONA_02,Rua Ana Rita da Silva Rodrigues,Estrada Municipal / Acesso Local,residential,-22.673728,-47.656656,2
+BLOQ_166,ZONA_02,Rua Gumercindo Rodrigues,Estrada Municipal / Acesso Local,residential,-22.673405,-47.656258,2
+BLOQ_167,ZONA_02,Rua Alberto Coral,Estrada Municipal / Acesso Local,unclassified,-22.670435,-47.65225,2
+BLOQ_168,ZONA_02,Avenida Coréia do Sul,Estrada Municipal / Acesso Local,unclassified,-22.673135,-47.604062,2
+BLOQ_169,ZONA_02,Avenida Hyundai,Estrada Secundária / Coletora,tertiary,-22.681251,-47.596791,2
+BLOQ_170,ZONA_02,Estrada Sem Nome / Acesso Rural,Rodovia Principal / Federal / Estadual,motorway_link,-22.680817,-47.59706,1
+BLOQ_171,ZONA_02,Estrada Victorio Tavares,Estrada Municipal / Acesso Local,unclassified,-22.663963,-47.62834,2
+BLOQ_172,ZONA_02,Estrada Sem Nome / Acesso Rural,Estrada Municipal / Acesso Local,unclassified,-22.663984,-47.628012,2
+BLOQ_173,ZONA_02,Rua Tambaú,Estrada Municipal / Acesso Local,residential,-22.664234,-47.624892,2
+BLOQ_174,ZONA_02,Rua Brodosqui,Estrada Municipal / Acesso Local,residential,-22.664139,-47.625508,2
