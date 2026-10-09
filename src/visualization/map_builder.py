@@ -66,7 +66,11 @@ def build_interactive_map(
     )
     
     # Camadas base adicionais
-    folium.TileLayer("OpenStreetMap", name="OpenStreetMap").add_to(m)
+    folium.TileLayer(
+        tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+        attr="Esri",
+        name="Esri World Street Map"
+    ).add_to(m)
     folium.TileLayer(
         tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         attr="Esri World Imagery",
@@ -110,7 +114,7 @@ def build_interactive_map(
 
     # 5. Camada de Malha Viária
     if edges_wgs is not None and not edges_wgs.empty:
-        fg_roads = folium.FeatureGroup(name="🛣️ Vias Conectadas (OpenStreetMap)", show=False)
+        fg_roads = folium.FeatureGroup(name="🛣️ Vias Conectadas (Vetor OSM)", show=True)
         try:
             sample_edges = edges_wgs.copy()
             if len(sample_edges) > 1000:
@@ -123,9 +127,9 @@ def build_interactive_map(
             folium.GeoJson(
                 sample_edges.__geo_interface__,
                 style_function=lambda x: {
-                    "color": "#607D8B",
-                    "weight": 1.8,
-                    "opacity": 0.50
+                    "color": "#FFC107",  # Amarelo/Laranja de alto contraste
+                    "weight": 3.0,       # Linha mais grossa
+                    "opacity": 0.95      # Quase totalmente opaco
                 }
             ).add_to(fg_roads)
             fg_roads.add_to(m)

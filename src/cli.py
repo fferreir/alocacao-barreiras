@@ -239,7 +239,8 @@ def main():
         barriers_gdf=barriers_gdf,
         properties_gdf=tagged_props,
         sensitivity_df=sensitivity_df,
-        buffer_km=args.buffer_km
+        buffer_km=args.buffer_km,
+        edges_gdf=edges_gdf
     )
 
     console.print(Panel.fit(

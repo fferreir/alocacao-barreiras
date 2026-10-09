@@ -16,7 +16,8 @@ def export_analysis_results(
     barriers_gdf: gpd.GeoDataFrame,
     properties_gdf: gpd.GeoDataFrame,
     sensitivity_df: Optional[pd.DataFrame] = None,
-    buffer_km: Optional[float] = None
+    buffer_km: Optional[float] = None,
+    edges_gdf: Optional[gpd.GeoDataFrame] = None
 ) -> Dict[str, str]:
     """
     Exporta os resultados completos em múltiplos formatos padrão de SIG (GeoJSON, GeoPackage, CSV, Markdown).
@@ -62,6 +63,13 @@ def export_analysis_results(
     props_df = pd.DataFrame(props_wgs.drop(columns=["geometry"]))
     props_df.to_csv(props_csv, index=False, encoding="utf-8-sig")
     exported_files["properties_csv"] = props_csv
+
+    # Malha Viária (Vetor)
+    if edges_gdf is not None and not edges_gdf.empty:
+        edges_wgs = edges_gdf.to_crs(epsg=4326)
+        edges_geojson = os.path.join(output_dir, "malha_viaria.geojson")
+        edges_wgs.to_file(edges_geojson, driver="GeoJSON")
+        exported_files["edges_geojson"] = edges_geojson
 
     # 2. Tabela de Sensibilidade
     if sensitivity_df is not None and not sensitivity_df.empty:

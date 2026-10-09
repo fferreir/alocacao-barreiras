@@ -91,7 +91,8 @@ def run_demo():
         zones_gdf=zones_gdf,
         barriers_gdf=barriers_mincut,
         properties_gdf=tagged_props,
-        buffer_km=4.0
+        buffer_km=4.0,
+        edges_gdf=edges_gdf
     )
 
     print("\n" + "=" * 75)
