@@ -30,9 +30,9 @@ Aplicação em Python para determinação geoespacial ótima do número mínimo 
      - Estradas Municipais e Acessos Rurais / Vicinais: capacidade $c = 1,0$
      - Entroncamentos Estratégicos (Min-Cut): capacidade $c = 1,0$
 
-5. **Análise de Sensibilidade e Indicadores de Desempenho (Tabelas 2 e 3)**:
-   - **Tabela Comparativa de Desempenho Computacional e Logístico (Tabela 2)**: Compara automaticamente *Geométrica Convencional* vs. *Min-Cut Híbrido* em termos de total de postos físicos, postos em entroncamentos estratégicos, custo logístico ponderado ($\sum$ capacidades), tempo de processamento computacional, conectividade residual e hermeticidade topológica.
-   - **Análise de Sensibilidade por Raio de Contenção (Tabela 3)**: Avalia múltiplos raios ($r$, ex: `3,0 km`, `5,0 km`, `7,0 km`, `10,0 km`) comparando o número de postos e a redução percentual entre a Estratégia Geométrica e o Min-Cut Híbrido.
+5. **Análise de Sensibilidade e Indicadores de Desempenho**:
+   - **Tabela Comparativa de Desempenho Computacional e Logístico**: Compara automaticamente *Geométrica Convencional* vs. *Min-Cut Híbrido* em termos de total de postos físicos, postos em entroncamentos estratégicos, custo logístico ponderado ($\sum$ capacidades), tempo de processamento computacional, conectividade residual e hermeticidade topológica.
+   - **Análise de Sensibilidade por Raio de Contenção**: Avalia múltiplos raios ($r$, ex: `3,0 km`, `5,0 km`, `7,0 km`, `10,0 km`) comparando o número de postos e a redução percentual entre a Estratégia Geométrica e o Min-Cut Híbrido.
 
 6. **Visualização e Exportação SIG Completa**:
    - **Shapefiles (`.shp`, `.shx`, `.dbf`, `.prj`, `.cpg`)**:
