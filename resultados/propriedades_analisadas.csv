@@ -1,0 +1,25 @@
+﻿id,codigo,nome,area_ha,atividade,foco,zone_id,in_infected_zone
+1,CAR_SP_0001,Fazenda Santa Cruz (Foco 1),141.5,Pecuária de Leite,1,ZONA_02,True
+2,CAR_SP_0002,Sítio Boa Vista (Foco 2),674.9,Citros,1,ZONA_02,True
+3,CAR_SP_0003,Estância Esperança (Foco 3),732.0,Grãos,1,ZONA_02,True
+4,CAR_SP_0004,Fazenda Bela Alvorada (Foco 4 - Isolado),186.7,Grãos,1,ZONA_01,True
+5,CAR_SP_0005,Sítio dos Ipês,283.8,Pecuária de Corte,0,,False
+6,CAR_SP_0006,Fazenda Primavera,475.8,Pecuária de Leite,0,ZONA_02,True
+7,CAR_SP_0007,Recanto das Águas,777.2,Pecuária de Corte,0,,False
+8,CAR_SP_0008,Fazenda São José,387.3,Pecuária de Corte,0,,False
+9,CAR_SP_0009,Sítio Monte Alegre,721.1,Grãos,0,,False
+10,CAR_SP_0010,Rancho Fundo,83.9,Pecuária de Leite,0,ZONA_01,True
+11,CAR_SP_0011,Estância Paraíso,341.5,Pecuária de Corte,0,,False
+12,CAR_SP_0012,Fazenda Morro Alto,454.8,Pecuária de Corte,0,,False
+13,CAR_SP_0013,Chácara Bela Vista,773.9,Grãos,0,,False
+14,CAR_SP_0014,Sítio São Pedro,457.0,Cana-de-açúcar,0,,False
+15,CAR_SP_0015,Fazenda Canavial,272.2,Pecuária de Leite,0,,False
+16,CAR_SP_0016,Rancho da Colina,105.9,Cana-de-açúcar,0,,False
+17,CAR_SP_0017,Sítio Palmeiras,629.2,Grãos,0,,False
+18,CAR_SP_0018,Fazenda Três Barras,270.1,Citros,0,,False
+19,CAR_SP_0019,Sítio do Cedro,199.1,Citros,0,,False
+20,CAR_SP_0020,Fazenda Rio Claro,642.6,Citros,0,,False
+21,CAR_SP_0021,Chácara das Flores,105.5,Pecuária de Corte,0,ZONA_01,True
+22,CAR_SP_0022,Sítio Recanto Verde,136.9,Cana-de-açúcar,0,,False
+23,CAR_SP_0023,Fazenda Santo Antônio,517.5,Pecuária de Corte,0,,False
+24,CAR_SP_0024,Sítio Aliança,121.6,Pecuária de Leite,0,,False

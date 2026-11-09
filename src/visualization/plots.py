@@ -38,7 +38,21 @@ def plot_sensitivity_curves(
     # Coluna de barreiras (compatibilidade)
     barriers_col = "num_barreiras_mincut" if "num_barreiras_mincut" in sensitivity_df.columns else "num_barreiras"
 
-    # Curva 1: Número de Bloqueios
+    lines = []
+    if "num_barreiras_geometrico" in sensitivity_df.columns:
+        line_geom = ax1.plot(
+            sensitivity_df["buffer_km"],
+            sensitivity_df["num_barreiras_geometrico"],
+            color="#757575",
+            marker="^",
+            linestyle="-.",
+            linewidth=2.0,
+            markersize=6,
+            label="Estratégia Geométrica Convencional"
+        )
+        lines.extend(line_geom)
+
+    # Curva 1: Número de Bloqueios Min-Cut
     line1 = ax1.plot(
         sensitivity_df["buffer_km"],
         sensitivity_df[barriers_col],
@@ -46,8 +60,9 @@ def plot_sensitivity_curves(
         marker="o",
         linewidth=2.5,
         markersize=7,
-        label="Nº de Bloqueios Min-Cut (Entroncamentos)"
+        label="Min-Cut Híbrido (Proposto)"
     )
+    lines.extend(line1)
     ax1.set_xlabel("Raio do Buffer em Torno dos Focos (km)", fontsize=12, fontweight="bold", labelpad=10)
     ax1.set_ylabel("Quantidade de Bloqueios / Postos", color=color_barriers, fontsize=12, fontweight="bold")
     ax1.tick_params(axis="y", labelcolor=color_barriers)
@@ -65,6 +80,7 @@ def plot_sensitivity_curves(
         markersize=6,
         label="Área Total Contida (km²)"
     )
+    lines.extend(line2)
     ax2.set_ylabel("Área Total da Zona Infectada (km²)", color=color_area, fontsize=12, fontweight="bold")
     ax2.tick_params(axis="y", labelcolor=color_area)
     ax2.grid(False)  # evitar sobreposição de grids
@@ -76,14 +92,13 @@ def plot_sensitivity_curves(
             ax1.axvline(x=recommended_radius, color="#388E3C", linestyle=":", linewidth=2, label=f"Recomendado ({recommended_radius} km)")
             ax1.scatter(
                 [recommended_radius],
-                rec_row["num_barreiras"],
+                rec_row[barriers_col],
                 color="#388E3C",
                 s=120,
                 zorder=5
             )
 
     # Legenda unificada
-    lines = line1 + line2
     labels = [l.get_label() for l in lines]
     ax1.legend(lines, labels, loc="upper left", frameon=True, facecolor="white", framealpha=0.9)
 

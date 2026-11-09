@@ -3,15 +3,31 @@ Módulo de otimização de bloqueios viários utilizando o Teorema do Min-Cut / 
 (Entroncamentos Estratégicos + Arestas Diretas + Garantia Formal de Cobertura Total).
 """
 from typing import Dict, Any, List, Optional, Tuple, Set
+import time
 import geopandas as gpd
 import pandas as pd
 import numpy as np
 import networkx as nx
-from shapely.geometry import Point, LineString, MultiPoint, Polygon
+from shapely.geometry import Point, LineString, MultiPoint, MultiLineString, Polygon
 from scipy.spatial import cKDTree
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def get_highway_capacity(highway_val: Any) -> float:
+    """Retorna o peso/capacidade logística da via de acordo com sua hierarquia funcional."""
+    if isinstance(highway_val, list):
+        hw_str = str(highway_val[0]).lower() if len(highway_val) > 0 else "unclassified"
+    else:
+        hw_str = str(highway_val).lower()
+
+    if any(key in hw_str for key in ["motorway", "trunk", "primary"]):
+        return 10.0
+    elif any(key in hw_str for key in ["secondary", "tertiary"]):
+        return 5.0
+    else:
+        return 1.0
 
 
 def classify_highway_type(highway_val: Any) -> str:
@@ -72,9 +88,12 @@ def allocate_barriers_min_cut(
     """
     if len(G) == 0 or properties_gdf.empty or zones_gdf.empty:
         return gpd.GeoDataFrame(
-            columns=["barrier_id", "zone_id", "barrier_type", "road_name", "road_class", "geometry"],
+            columns=["barrier_id", "zone_id", "barrier_type", "road_name", "road_class", "capacity", "geometry"],
             crs=properties_gdf.crs
         )
+
+    if cut_mode in ["geometric", "geom"]:
+        return allocate_barriers(ox_gdfs_from_graph(G)[1], zones_gdf)
 
     # 1. Alinhar CRS métrico projetado
     metric_crs = properties_gdf.estimate_utm_crs() if not properties_gdf.crs.is_projected else properties_gdf.crs
@@ -157,8 +176,11 @@ def allocate_barriers_min_cut(
         # Nós na banda de busca (Vertex Splitting)
         # Prioriza entroncamentos (grau >= 3) com capacidade 1.0; outros nós com 1.2
         for w in band_nodes:
-            deg = G.degree(w)
-            node_cap = 1.0 if deg >= 3 else 1.2
+            if cut_mode == "edges":
+                node_cap = INF_CAP
+            else:
+                deg = G.degree(w)
+                node_cap = 1.0 if deg >= 3 else 1.2
             flow_G.add_edge(f"{w}_in", f"{w}_out", capacity=node_cap)
             flow_G.add_edge(f"{w}_out", f"{w}_in", capacity=node_cap)
 
@@ -171,17 +193,7 @@ def allocate_barriers_min_cut(
                 continue
 
             hw = data.get("highway", "unclassified")
-            if isinstance(hw, list):
-                hw_str = str(hw[0]).lower()
-            else:
-                hw_str = str(hw).lower()
-
-            if any(key in hw_str for key in ["motorway", "trunk", "primary"]):
-                edge_cap = 10.0
-            elif any(key in hw_str for key in ["secondary", "tertiary"]):
-                edge_cap = 5.0
-            else:
-                edge_cap = 1.0
+            edge_cap = get_highway_capacity(hw)
 
             u_in, u_out = f"{u}_in", f"{u}_out"
             v_in, v_out = f"{v}_in", f"{v}_out"
@@ -268,6 +280,7 @@ def allocate_barriers_min_cut(
                 "road_class": classify_highway_type(primary_hw),
                 "highway": primary_hw,
                 "connected_roads": len(adj_edges),
+                "capacity": 1.0,
                 "latitude": round(pt_wgs.y, 6),
                 "longitude": round(pt_wgs.x, 6),
                 "geometry": pt_proj
@@ -312,6 +325,7 @@ def allocate_barriers_min_cut(
                 "road_class": classify_highway_type(hw),
                 "highway": str(hw) if not isinstance(hw, list) else str(hw[0]),
                 "connected_roads": 2,
+                "capacity": get_highway_capacity(hw),
                 "latitude": round(pt_wgs.y, 6),
                 "longitude": round(pt_wgs.x, 6),
                 "geometry": midpoint
@@ -336,6 +350,7 @@ def allocate_barriers_min_cut(
                 "road_class": esc_edge["road_class"],
                 "highway": esc_edge["highway"],
                 "connected_roads": 2,
+                "capacity": get_highway_capacity(esc_edge["highway"]),
                 "latitude": esc_edge["latitude"],
                 "longitude": esc_edge["longitude"],
                 "geometry": esc_edge["geometry"]
@@ -461,10 +476,10 @@ def allocate_barriers(
     zones_gdf: gpd.GeoDataFrame,
     dedup_distance_meters: float = 30.0
 ) -> gpd.GeoDataFrame:
-    """Corte de fronteira simples (legado/fallback)."""
+    """Corte geométrico convencional de fronteira simples."""
     if edges_gdf.empty or zones_gdf.empty:
         return gpd.GeoDataFrame(
-            columns=["barrier_id", "zone_id", "barrier_type", "highway", "road_name", "road_class", "geometry"],
+            columns=["barrier_id", "zone_id", "barrier_type", "highway", "road_name", "road_class", "connected_roads", "capacity", "geometry"],
             crs=zones_gdf.crs
         )
 
@@ -508,20 +523,23 @@ def allocate_barriers(
 
             highway_val = edge_row.get("highway", "unclassified")
             name_val = edge_row.get("name", None)
+            hw_clean = str(highway_val) if not isinstance(highway_val, list) else str(highway_val[0])
 
             for pt in points:
                 raw_barriers.append({
                     "zone_id": zone_id,
-                    "barrier_type": "Fronteira Simples",
-                    "highway": str(highway_val) if not isinstance(highway_val, list) else str(highway_val[0]),
+                    "barrier_type": "Fronteira Simples (Geométrica)",
+                    "highway": hw_clean,
                     "road_name": extract_road_name(name_val),
                     "road_class": classify_highway_type(highway_val),
+                    "connected_roads": 2,
+                    "capacity": get_highway_capacity(highway_val),
                     "geometry": pt
                 })
 
     if not raw_barriers:
         return gpd.GeoDataFrame(
-            columns=["barrier_id", "zone_id", "barrier_type", "highway", "road_name", "road_class", "geometry"],
+            columns=["barrier_id", "zone_id", "barrier_type", "highway", "road_name", "road_class", "connected_roads", "capacity", "geometry"],
             crs=metric_crs
         )
 
@@ -541,6 +559,12 @@ def consolidate_barrier_points(
 ) -> gpd.GeoDataFrame:
     """Agrupa pontos de bloqueio contíguos a menos de max_dist metros."""
     if len(barriers_gdf) <= 1:
+        if not barriers_gdf.empty and "capacity" not in barriers_gdf.columns:
+            barriers_gdf = barriers_gdf.copy()
+            barriers_gdf["capacity"] = [
+                1.0 if "Entroncamento" in str(r.get("barrier_type", "")) else get_highway_capacity(r.get("highway", "unclassified"))
+                for _, r in barriers_gdf.iterrows()
+            ]
         return barriers_gdf
 
     coords = np.array([(geom.x, geom.y) for geom in barriers_gdf.geometry])
@@ -570,16 +594,130 @@ def consolidate_barrier_points(
         if not named_rows.empty:
             rep_row = named_rows.iloc[0]
 
+        b_type = rep_row.get("barrier_type", "Bloqueio")
+        hw = rep_row.get("highway", "unclassified")
+        cap = rep_row.get(
+            "capacity",
+            1.0 if "Entroncamento" in str(b_type) else get_highway_capacity(hw)
+        )
+
         record = {
             "zone_id": rep_row.get("zone_id", "ZONA_01"),
-            "barrier_type": rep_row.get("barrier_type", "Bloqueio"),
-            "highway": rep_row.get("highway", "unclassified"),
+            "barrier_type": b_type,
+            "highway": hw,
             "road_name": rep_row.get("road_name", "Via"),
             "road_class": rep_row.get("road_class", "Via"),
+            "connected_roads": rep_row.get("connected_roads", 2),
+            "capacity": float(cap),
             "geometry": rep_geom
         }
-        if "connected_roads" in rep_row:
-            record["connected_roads"] = rep_row["connected_roads"]
         merged_records.append(record)
 
     return gpd.GeoDataFrame(merged_records, crs=barriers_gdf.crs)
+
+
+def compute_solution_stats(
+    barriers_gdf: gpd.GeoDataFrame,
+    elapsed_time_s: float = 0.0,
+    residual_connectivity: str = "Falsa (Fluxo Zero)",
+    reachability_pct: float = 100.0
+) -> Dict[str, Any]:
+    """
+    Calcula os indicadores de desempenho computacional e logístico de uma solução de alocação.
+    """
+    total_barriers = len(barriers_gdf)
+    if total_barriers == 0:
+        return {
+            "total_postos": 0,
+            "postos_entroncamentos": 0,
+            "pct_entroncamentos": 0.0,
+            "custo_logistico": 0.0,
+            "tempo_processamento_s": round(elapsed_time_s, 2),
+            "conectividade_residual": residual_connectivity,
+            "hermeticidade_topologica_pct": reachability_pct
+        }
+
+    if "barrier_type" in barriers_gdf.columns:
+        num_junctions = int(barriers_gdf["barrier_type"].astype(str).str.contains("Entroncamento").sum())
+    else:
+        num_junctions = 0
+
+    pct_junctions = (num_junctions / total_barriers) * 100.0 if total_barriers > 0 else 0.0
+
+    if "capacity" in barriers_gdf.columns:
+        custo_logistico = float(barriers_gdf["capacity"].sum())
+    else:
+        custo_logistico = sum(
+            1.0 if "Entroncamento" in str(r.get("barrier_type", "")) else get_highway_capacity(r.get("highway", "unclassified"))
+            for _, r in barriers_gdf.iterrows()
+        )
+
+    return {
+        "total_postos": int(total_barriers),
+        "postos_entroncamentos": int(num_junctions),
+        "pct_entroncamentos": round(pct_junctions, 1),
+        "custo_logistico": round(custo_logistico, 1),
+        "tempo_processamento_s": round(elapsed_time_s, 2),
+        "conectividade_residual": residual_connectivity,
+        "hermeticidade_topologica_pct": round(reachability_pct, 1)
+    }
+
+
+def compare_allocation_strategies(
+    G: nx.MultiDiGraph,
+    edges_gdf: gpd.GeoDataFrame,
+    properties_gdf: gpd.GeoDataFrame,
+    zones_gdf: gpd.GeoDataFrame,
+    buffer_km: float,
+    tolerance_km: float = 1.0,
+    cut_mode: str = "hybrid",
+    foco_col: str = "foco"
+) -> Dict[str, Any]:
+    """
+    Executa e compara as estratégias 'Geométrica Convencional' e 'Min-Cut Híbrido (Proposto)',
+    gerando todas as estatísticas da Tabela 2 (desempenho computacional e logístico).
+    """
+    # 1. Estratégia Geométrica Convencional
+    t0_geom = time.perf_counter()
+    barriers_geom = allocate_barriers(edges_gdf=edges_gdf, zones_gdf=zones_gdf)
+    t_geom = time.perf_counter() - t0_geom
+    stats_geom = compute_solution_stats(barriers_geom, elapsed_time_s=t_geom)
+
+    # 2. Estratégia Min-Cut Híbrido (Proposto)
+    mc_mode = cut_mode if cut_mode not in ["geometric", "geom"] else "hybrid"
+    t0_mc = time.perf_counter()
+    barriers_mincut = allocate_barriers_min_cut(
+        G=G,
+        properties_gdf=properties_gdf,
+        zones_gdf=zones_gdf,
+        buffer_km=buffer_km,
+        tolerance_km=tolerance_km,
+        cut_mode=mc_mode,
+        foco_col=foco_col
+    )
+    t_mc = time.perf_counter() - t0_mc
+    stats_mc = compute_solution_stats(barriers_mincut, elapsed_time_s=t_mc)
+
+    # 3. Variações relativas (Geométrica -> Min-Cut)
+    n_geom = stats_geom["total_postos"]
+    n_mc = stats_mc["total_postos"]
+    reducao_postos_pct = ((n_mc - n_geom) / n_geom) * 100.0 if n_geom > 0 else 0.0
+
+    c_geom = stats_geom["custo_logistico"]
+    c_mc = stats_mc["custo_logistico"]
+    reducao_custo_pct = ((c_mc - c_geom) / c_geom) * 100.0 if c_geom > 0 else 0.0
+
+    comparison = {
+        "buffer_km": buffer_km,
+        "tolerance_km": tolerance_km,
+        "geometric": stats_geom,
+        "mincut": stats_mc,
+        "reducao_postos_pct": round(reducao_postos_pct, 1),
+        "reducao_custo_pct": round(reducao_custo_pct, 1)
+    }
+
+    return {
+        "barriers_geom": barriers_geom,
+        "barriers_mincut": barriers_mincut,
+        "comparison": comparison
+    }

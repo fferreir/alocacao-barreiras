@@ -10,7 +10,7 @@ from tests.generate_sample_data import generate_sample_properties
 from src.core.loader import load_properties
 from src.core.buffer import create_infected_zones
 from src.core.osm import download_road_network
-from src.core.optimizer import allocate_barriers_min_cut, allocate_barriers
+from src.core.optimizer import allocate_barriers_min_cut, allocate_barriers, compare_allocation_strategies
 from src.core.sensitivity import run_sensitivity_analysis
 from src.visualization.map_builder import build_interactive_map
 from src.visualization.plots import plot_sensitivity_curves, plot_barrier_classes
@@ -32,45 +32,46 @@ def run_demo():
     num_focos = (props_gdf["foco"] == 1).sum()
     print(f" -> Total de propriedades: {len(props_gdf)} | Focos ativos: {num_focos}")
 
-    # 2. Gerar Zonas de Contenção Base (4.0 km)
-    print("\n[2/5] Gerando zonas de contenção e coalescência espacial (Buffer base = 4.0 km)...")
-    zones_gdf, tagged_props = create_infected_zones(props_gdf, buffer_km=4.0, foco_col="foco")
+    # 2. Gerar Zonas de Contenção Base (3.0 km)
+    buffer_km = 3.0
+    tolerance_km = 1.0
+    print(f"\n[2/5] Gerando zonas de contenção e coalescência espacial (Buffer base = {buffer_km:.1f} km)...")
+    zones_gdf, tagged_props = create_infected_zones(props_gdf, buffer_km=buffer_km, foco_col="foco")
     print(f" -> Zonas geradas: {len(zones_gdf)} cluster(s) de contenção.")
 
     # 3. Baixar Malha Viária
     print("\n[3/5] Baixando malha viária do OpenStreetMap com margem de tolerância...")
-    G, edges_gdf, _ = download_road_network(zones_gdf, network_type="all", buffer_margin_km=2.0)
+    G, edges_gdf, _ = download_road_network(zones_gdf, network_type="all", buffer_margin_km=tolerance_km + 1.0)
     print(f" -> Grafo viário: {len(G.nodes)} nós e {len(G.edges)} vias.")
 
-    # 4. Comparação: Corte de Fronteira Ingênuo vs. Min-Cut / Max-Flow
+    # 4. Comparação: Corte de Fronteira Geométrico vs. Min-Cut Híbrido
     print("\n[4/5] Executando Otimização e Comparação de Algoritmos...")
-    
-    # 4.1. Corte de Fronteira Clássico
-    barriers_geom = allocate_barriers(edges_gdf, zones_gdf)
-    print(f" ⚠️  Abordagem Geométrica de Fronteira: {len(barriers_geom)} barreiras (muito oneroso)")
-
-    # 4.2. Teorema Min-Cut / Max-Flow em Entroncamentos (tolerância ±1.5 km)
-    barriers_mincut = allocate_barriers_min_cut(
+    comp_res = compare_allocation_strategies(
         G=G,
+        edges_gdf=edges_gdf,
         properties_gdf=props_gdf,
         zones_gdf=zones_gdf,
-        buffer_km=4.0,
-        tolerance_km=1.5,
-        cut_mode="junctions",
+        buffer_km=buffer_km,
+        tolerance_km=tolerance_km,
+        cut_mode="hybrid",
         foco_col="foco"
     )
-    n_junctions = (barriers_mincut["barrier_type"].str.contains("Entroncamento")).sum()
-    reduction_pct = ((len(barriers_geom) - len(barriers_mincut)) / len(barriers_geom)) * 100.0 if len(barriers_geom) > 0 else 0
-    
-    print(f" 🎯 Teorema Min-Cut / Max-Flow (Entroncamentos): {len(barriers_mincut)} barreiras ({n_junctions} em entroncamentos)")
-    print(f" 🚀 Redução de esforço e custos operacionais: {reduction_pct:.1f}% de economia de postos de fiscalização!")
+    barriers_geom = comp_res["barriers_geom"]
+    barriers_mincut = comp_res["barriers_mincut"]
+    comparison_stats = comp_res["comparison"]
+    g_st = comparison_stats["geometric"]
+    m_st = comparison_stats["mincut"]
 
-    print("\nPrimeiros Postos de Bloqueio Min-Cut Alocados:")
-    for _, b in barriers_mincut.head(10).iterrows():
-        print(f"  🛑 {b['barrier_id']} [{b['zone_id']}]: {b['road_name']} ({b['road_class']}) - Lat: {b['latitude']:.5f}, Lon: {b['longitude']:.5f}")
+    print(f" ⚠️  Geométrica Convencional: {g_st['total_postos']} postos | Custo: {g_st['custo_logistico']:.1f} | Tempo: {g_st['tempo_processamento_s']:.2f} s")
+    print(
+        f" 🎯 Min-Cut Híbrido (Proposto): {m_st['total_postos']} postos ({comparison_stats['reducao_postos_pct']:+.1f}%) | "
+        f"Entroncamentos: {m_st['postos_entroncamentos']} ({m_st['pct_entroncamentos']:.1f}%) | "
+        f"Custo: {m_st['custo_logistico']:.1f} ({comparison_stats['reducao_custo_pct']:+.1f}%) | "
+        f"Tempo: {m_st['tempo_processamento_s']:.2f} s"
+    )
 
-    # 5. Exportação e Mapa Interativo
-    print("\n[5/5] Gerando mapa interativo e exportando dados...")
+    # 5. Exportação (Shapefiles, GeoJSON, CSV e Relatório Executivo) e Mapa Interativo
+    print("\n[5/5] Gerando mapa interativo, Shapefiles e Relatório Executivo...")
     map_path = os.path.join(output_dir, "mapa_bloqueios_mincut.html")
     build_interactive_map(
         properties_gdf=tagged_props,
@@ -91,15 +92,22 @@ def run_demo():
         zones_gdf=zones_gdf,
         barriers_gdf=barriers_mincut,
         properties_gdf=tagged_props,
-        buffer_km=4.0,
-        edges_gdf=edges_gdf
+        buffer_km=buffer_km,
+        edges_gdf=edges_gdf,
+        comparison_stats=comparison_stats,
+        barriers_geom_gdf=barriers_geom,
+        barriers_mincut_gdf=barriers_mincut,
+        method="min-cut",
+        tolerance_km=tolerance_km
     )
 
     print("\n" + "=" * 75)
     print("DEMONSTRAÇÃO MIN-CUT CONCLUÍDA COM SUCESSO!")
     print(f"Arquivos salvos em: {output_dir}/")
     print(f" - Mapa Interativo HTML: {map_path}")
-    print(f" - Relatório Executivo: {exported['report_md']}")
+    print(f" - Shapefile dos Postos: {exported.get('barriers_shp')}")
+    print(f" - Shapefile das Vias:   {exported.get('edges_shp')}")
+    print(f" - Relatório Executivo:  {exported['report_md']}")
     print("=" * 75)
 
 if __name__ == "__main__":

@@ -10,7 +10,13 @@ import pandas as pd
 
 from src.core.loader import load_properties, validate_properties, ensure_projected_crs
 from src.core.buffer import create_infected_zones, tag_properties_with_zones
-from src.core.optimizer import allocate_barriers, allocate_barriers_min_cut, consolidate_barrier_points
+from src.core.optimizer import (
+    allocate_barriers,
+    allocate_barriers_min_cut,
+    consolidate_barrier_points,
+    compare_allocation_strategies,
+    compute_solution_stats
+)
 from src.core.sensitivity import run_sensitivity_analysis
 from src.export.exporter import export_analysis_results
 from tests.generate_sample_data import generate_sample_properties
@@ -120,14 +126,36 @@ def test_exporter(tmp_path):
     barriers_gdf = gpd.GeoDataFrame({
         "barrier_id": ["BLOQ_001"],
         "zone_id": ["ZONA_01"],
-        "barrier_type": ["Entroncamento / Bifurcação"],
+        "barrier_type": ["Entroncamento Estratégico (Min-Cut)"],
         "road_name": ["Entroncamento BR-101 e SP-304"],
         "road_class": ["Rodovia Principal"],
+        "highway": ["primary"],
         "connected_roads": [3],
+        "capacity": [1.0],
         "latitude": [-22.70],
         "longitude": [-47.60],
         "geometry": [Point(-47.60, -22.70)]
     }, crs="EPSG:4326")
+
+    edges_gdf = gpd.GeoDataFrame({
+        "u": [1],
+        "v": [2],
+        "key": [0],
+        "osmid": [[1001, 1002]],
+        "name": ["BR-101"],
+        "highway": ["primary"],
+        "length": [1500.0],
+        "geometry": [LineString([(-47.61, -22.71), (-47.59, -22.69)])]
+    }, crs="EPSG:4326")
+
+    comparison_stats = {
+        "buffer_km": 2.0,
+        "tolerance_km": 1.0,
+        "geometric": compute_solution_stats(barriers_gdf, elapsed_time_s=0.5),
+        "mincut": compute_solution_stats(barriers_gdf, elapsed_time_s=1.2),
+        "reducao_postos_pct": -67.3,
+        "reducao_custo_pct": -81.3
+    }
 
     output_dir = str(tmp_path / "output_test")
     exported = export_analysis_results(
@@ -135,13 +163,25 @@ def test_exporter(tmp_path):
         zones_gdf=zones_gdf,
         barriers_gdf=barriers_gdf,
         properties_gdf=tagged_props,
-        buffer_km=2.0
+        buffer_km=2.0,
+        edges_gdf=edges_gdf,
+        comparison_stats=comparison_stats
     )
 
     assert os.path.exists(exported["zones_geojson"])
+    assert os.path.exists(exported["zones_shp"])
     assert os.path.exists(exported["barriers_geojson"])
+    assert os.path.exists(exported["barriers_shp"])
+    assert os.path.exists(exported["edges_geojson"])
+    assert os.path.exists(exported["edges_shp"])
     assert os.path.exists(exported["barriers_csv"])
     assert os.path.exists(exported["report_md"])
+
+    with open(exported["report_md"], "r", encoding="utf-8") as f:
+        report_text = f.read()
+    assert "Indicadores de Desempenho Computacional e Logístico" in report_text
+    assert "Custo Logístico Ponderado" in report_text
+    assert "Hermeticidade Topológica" in report_text
 
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from src.core.loader import load_properties
 from src.core.buffer import create_infected_zones
 from src.core.osm import download_road_network
-from src.core.optimizer import allocate_barriers_min_cut
+from src.core.optimizer import allocate_barriers_min_cut, allocate_barriers, compare_allocation_strategies
 from src.core.sensitivity import run_sensitivity_analysis
 from src.visualization.map_builder import build_interactive_map
 from src.visualization.plots import plot_sensitivity_curves, plot_barrier_classes
@@ -25,7 +25,7 @@ logging.basicConfig(level=logging.WARNING, format="%(levelname)s: %(message)s")
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Alocação Ótima de Barreiras Sanitárias com Teorema do Min-Cut / Max-Flow e Entroncamentos."
+        description="Alocação Ótima de Barreiras Sanitárias com Teorema do Min-Cut / Max-Flow e Solução Geométrica."
     )
     
     parser.add_argument(
@@ -41,8 +41,8 @@ def main():
     parser.add_argument(
         "--buffer-km", "-b",
         type=float,
-        default=4.0,
-        help="Raio base do buffer em km (padrão: 4.0 km)."
+        default=3.0,
+        help="Raio base do buffer em km (padrão: 3.0 km)."
     )
     parser.add_argument(
         "--tolerance-km", "-t",
@@ -51,10 +51,16 @@ def main():
         help="Tolerância da banda espacial em km para busca de entroncamentos ótimos (padrão: 1.0 km)."
     )
     parser.add_argument(
+        "--method", "-m",
+        default="min-cut",
+        choices=["min-cut", "mincut", "geometric", "geom"],
+        help="Estratégia de alocação para saída principal: 'min-cut' (Min-Cut Híbrido) ou 'geometric' (Geométrica Convencional). Padrão: 'min-cut'."
+    )
+    parser.add_argument(
         "--cut-mode", "-c",
-        default="junctions",
-        choices=["junctions", "edges", "hybrid"],
-        help="Modo do Teorema Min-Cut: 'junctions' (nós de entroncamento), 'edges' (arestas) ou 'hybrid' (padrão: 'junctions')."
+        default="hybrid",
+        choices=["hybrid", "junctions", "edges", "geometric"],
+        help="Modo do algoritmo: 'hybrid' (padrão), 'junctions', 'edges' ou 'geometric'."
     )
     parser.add_argument(
         "--sensitivity", "-s",
@@ -62,22 +68,29 @@ def main():
         help="Executar análise de sensibilidade e trade-off variando o raio do buffer."
     )
     parser.add_argument(
+        "--radii",
+        type=float,
+        nargs="+",
+        default=None,
+        help="Lista explícita de raios (km) para análise de sensibilidade (ex: --radii 3.0 5.0 7.0 10.0)."
+    )
+    parser.add_argument(
         "--buffer-min",
         type=float,
-        default=2.0,
-        help="Raio mínimo para sensibilidade em km (padrão: 2.0 km)."
+        default=3.0,
+        help="Raio mínimo para sensibilidade em km (padrão: 3.0 km)."
     )
     parser.add_argument(
         "--buffer-max",
         type=float,
-        default=6.0,
-        help="Raio máximo para sensibilidade em km (padrão: 6.0 km)."
+        default=10.0,
+        help="Raio máximo para sensibilidade em km (padrão: 10.0 km)."
     )
     parser.add_argument(
         "--buffer-step",
         type=float,
-        default=1.0,
-        help="Passo do raio para sensibilidade em km (padrão: 1.0 km)."
+        default=2.0,
+        help="Passo do raio para sensibilidade em km (padrão: 2.0 km)."
     )
     parser.add_argument(
         "--network-type",
@@ -94,9 +107,13 @@ def main():
     
     args = parser.parse_args()
 
+    # Normalizar método escolhido
+    method = "geometric" if (args.method in ["geometric", "geom"] or args.cut_mode == "geometric") else "min-cut"
+    cut_mode = "geometric" if method == "geometric" else args.cut_mode
+
     console.print(Panel.fit(
         "[bold cyan]🛡️ SISTEMA DE ALOCAÇÃO ÓTIMA DE BARREIRAS SANITÁRIAS RURAIS[/bold cyan]\n"
-        "[white]Otimização de Gargalos & Entroncamentos via Teorema Min-Cut / Max-Flow[/white]",
+        "[white]Comparativo Geométrica Convencional vs. Teorema Min-Cut / Max-Flow Híbrido[/white]",
         border_style="cyan"
     ))
 
@@ -111,7 +128,11 @@ def main():
             sys.exit(1)
 
     total_focos = (properties_gdf[args.foco_col] == 1).sum()
-    console.print(f"📍 Total de propriedades: [bold]{len(properties_gdf)}[/bold] | Focos ativos: [bold red]{total_focos}[/bold red]")
+    console.print(
+        f"📍 Total de propriedades: [bold]{len(properties_gdf)}[/bold] | "
+        f"Focos ativos: [bold red]{total_focos}[/bold red] | "
+        f"Saída selecionada: [bold cyan]{'Geométrica Convencional' if method == 'geometric' else 'Min-Cut Híbrido'}[/bold cyan]"
+    )
 
     if total_focos == 0:
         console.print("[bold red]Nenhum foco encontrado. Encerrando.[/bold red]")
@@ -122,47 +143,64 @@ def main():
     # 2. Análise de Sensibilidade (se solicitada)
     sensitivity_df = None
     if args.sensitivity:
-        radii = []
-        r = args.buffer_min
-        while r <= args.buffer_max + 1e-5:
-            radii.append(round(r, 2))
-            r += args.buffer_step
+        if args.radii:
+            radii = sorted(list(set(round(float(x), 2) for x in args.radii)))
+        else:
+            radii = []
+            r = args.buffer_min
+            while r <= args.buffer_max + 1e-5:
+                radii.append(round(r, 2))
+                r += args.buffer_step
 
-        console.print(f"\n[bold yellow]🔬 Executando Análise de Sensibilidade Min-Cut ({len(radii)} cenários de {args.buffer_min}km a {args.buffer_max}km com tolerância ±{args.tolerance_km:.1f}km)...[/bold yellow]")
+        console.print(
+            f"\n[bold yellow]🔬 Executando Análise de Sensibilidade Comparativa ({len(radii)} cenários: {radii} km com tolerância ±{args.tolerance_km:.1f}km)...[/bold yellow]"
+        )
         
         with Progress(console=console) as progress:
             task = progress.add_task("[cyan]Calculando trade-offs...", total=len(radii))
             
             def on_progress(current, total, current_r):
-                progress.update(task, completed=current, description=f"[cyan]Min-Cut para buffer: {current_r:.1f} km...")
+                progress.update(task, completed=current, description=f"[cyan]Avaliando Geométrica vs. Min-Cut para buffer: {current_r:.1f} km...")
                 
             sensitivity_df, _ = run_sensitivity_analysis(
                 properties_gdf,
                 buffer_radii_km=radii,
                 tolerance_km=args.tolerance_km,
-                cut_mode=args.cut_mode,
+                cut_mode=cut_mode,
                 foco_col=args.foco_col,
                 network_type=args.network_type,
                 progress_callback=on_progress
             )
 
-        # Exibir Tabela de Sensibilidade
-        table = Table(title="🔬 Sensibilidade Min-Cut: Raio vs. Bloqueios em Entroncamentos", header_style="bold magenta")
-        table.add_column("Raio (km)", justify="center")
-        table.add_column("Nº Barreiras Ótimas", justify="center", style="bold red")
-        table.add_column("Em Entroncamentos", justify="center", style="bold green")
+        # Exibir Tabela 3 de Sensibilidade
+        table = Table(
+            title="🔬 Tabela 3: Análise de Sensibilidade (Variação do Número de Postos por Raio r)",
+            header_style="bold magenta"
+        )
+        table.add_column("Raio (r)", justify="center")
+        table.add_column("Estratégia Geométrica", justify="center")
+        table.add_column("Min-Cut Híbrido", justify="center", style="bold green")
+        table.add_column("Redução (Geom. → Min-Cut)", justify="center", style="bold cyan")
+        table.add_column("Em Entroncamentos", justify="center")
+        table.add_column("Custo (Geom. → Min-Cut)", justify="center")
         table.add_column("Área Total (km²)", justify="center")
-        table.add_column("Zonas Coalescidas", justify="center")
-        table.add_column("Propriedades Afetadas", justify="center")
         
         for _, row in sensitivity_df.iterrows():
+            n_g = int(row.get("num_barreiras_geometrico", row["num_barreiras"]))
+            n_mc = int(row.get("num_barreiras_mincut", row["num_barreiras"]))
+            red_p = float(row.get("reducao_pct", 0.0))
+            n_j = int(row.get("barreiras_em_entroncamentos", 0))
+            pct_j = float(row.get("pct_entroncamentos", 0.0))
+            c_g = float(row.get("custo_geometrico", 0.0))
+            c_mc = float(row.get("custo_mincut", 0.0))
             table.add_row(
-                f"{row['buffer_km']:.1f}",
-                str(int(row["num_barreiras_mincut"])),
-                str(int(row["barreiras_em_entroncamentos"])),
-                f"{row['area_total_km2']:.2f}",
-                str(int(row["num_zonas_coalescidas"])),
-                str(int(row["propriedades_afetadas"]))
+                f"{row['buffer_km']:.1f} km",
+                f"{n_g} postos",
+                f"{n_mc} postos",
+                f"{red_p:+.1f}%",
+                f"{n_j} ({pct_j:.1f}%)",
+                f"{c_g:.1f} → {c_mc:.1f}",
+                f"{row['area_total_km2']:.2f}"
             )
         console.print(table)
 
@@ -170,8 +208,8 @@ def main():
         plot_sensitivity_curves(sensitivity_df, save_path=plot_path, recommended_radius=args.buffer_km)
         console.print(f"📊 Gráfico de sensibilidade salvo em: [bold green]{plot_path}[/bold green]")
 
-    # 3. Execução do Cenário Selecionado
-    console.print(f"\n[bold green]🚀 Processando Cenário Min-Cut: Buffer = {args.buffer_km:.1f} km (Tolerância ±{args.tolerance_km:.1f} km)...[/bold green]")
+    # 3. Execução do Cenário Selecionado e Comparação (Tabela 2)
+    console.print(f"\n[bold green]🚀 Processando Cenário Piloto: Buffer = {args.buffer_km:.1f} km (Tolerância ±{args.tolerance_km:.1f} km)...[/bold green]")
     
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console) as progress:
         t_buf = progress.add_task("[yellow]Gerando zonas de contenção e coalescência espacial...", total=None)
@@ -182,26 +220,83 @@ def main():
         G, edges_gdf, _ = download_road_network(zones_gdf, network_type=args.network_type, buffer_margin_km=args.tolerance_km + 1.0)
         progress.update(t_osm, description=f"[green]Malha viária carregada: {len(G.nodes)} nós e {len(G.edges)} vias.")
 
-        t_opt = progress.add_task("[yellow]Calculando Corte Mínimo (Min-Cut / Max-Flow)...", total=None)
-        barriers_gdf = allocate_barriers_min_cut(
+        t_opt = progress.add_task("[yellow]Avaliando solução Geométrica Convencional e Min-Cut Híbrido...", total=None)
+        comp_res = compare_allocation_strategies(
             G=G,
+            edges_gdf=edges_gdf,
             properties_gdf=properties_gdf,
             zones_gdf=zones_gdf,
             buffer_km=args.buffer_km,
             tolerance_km=args.tolerance_km,
-            cut_mode=args.cut_mode,
+            cut_mode=cut_mode,
             foco_col=args.foco_col
         )
-        progress.update(t_opt, description=f"[green]Min-Cut concluído: {len(barriers_gdf)} posto(s) estratégico(s) de bloqueio.")
+        barriers_geom = comp_res["barriers_geom"]
+        barriers_mincut = comp_res["barriers_mincut"]
+        comparison_stats = comp_res["comparison"]
+        barriers_gdf = barriers_geom if method == "geometric" else barriers_mincut
+        progress.update(
+            t_opt,
+            description=(
+                f"[green]Otimização concluída: Geométrica = {len(barriers_geom)} postos | "
+                f"Min-Cut = {len(barriers_mincut)} postos ({comparison_stats['reducao_postos_pct']:+.1f}%)."
+            )
+        )
 
-    # 4. Tabela de Bloqueios Alocados
+    # 3.1. Exibir Tabela 2: Indicadores de Desempenho Computacional e Logístico
+    g_st = comparison_stats["geometric"]
+    m_st = comparison_stats["mincut"]
+    t2 = Table(
+        title=f"📊 Tabela 2: Indicadores de Desempenho Computacional e Logístico (r = {args.buffer_km:.1f} km)",
+        header_style="bold cyan"
+    )
+    t2.add_column("Métrica de Avaliação", justify="left", style="bold")
+    t2.add_column("Geométrica Convencional", justify="center")
+    t2.add_column("Min-Cut Híbrido (Proposto)", justify="center", style="bold green")
+    t2.add_row(
+        "Total de Postos Físicos Exigidos",
+        str(g_st["total_postos"]),
+        f"{m_st['total_postos']} ({comparison_stats['reducao_postos_pct']:+.1f}%)"
+    )
+    t2.add_row(
+        "Postos em Entroncamentos Estratégicos",
+        str(g_st["postos_entroncamentos"]),
+        f"{m_st['postos_entroncamentos']} ({m_st['pct_entroncamentos']:.1f}%)"
+    )
+    t2.add_row(
+        "Custo Logístico Ponderado (∑ capacidades)",
+        f"{g_st['custo_logistico']:.1f}",
+        f"{m_st['custo_logistico']:.1f} ({comparison_stats['reducao_custo_pct']:+.1f}%)"
+    )
+    t2.add_row(
+        "Tempo de Processamento Computacional",
+        f"≈ {g_st['tempo_processamento_s']:.2f} s",
+        f"≈ {m_st['tempo_processamento_s']:.2f} s"
+    )
+    t2.add_row(
+        "Conectividade Residual Origem-Destino",
+        g_st["conectividade_residual"],
+        m_st["conectividade_residual"]
+    )
+    t2.add_row(
+        "Hermeticidade Topológica (Reachability)",
+        f"{int(g_st['hermeticidade_topologica_pct'])}%",
+        f"{int(m_st['hermeticidade_topologica_pct'])}%"
+    )
+    console.print(t2)
+
+    # 4. Tabela de Bloqueios Alocados (Solução Selecionada)
     if not barriers_gdf.empty:
-        b_table = Table(title=f"🛑 Postos de Bloqueio Min-Cut Alocados (Buffer = {args.buffer_km:.1f} km)", header_style="bold red")
+        b_table = Table(
+            title=f"🛑 Postos de Bloqueio Alocados ({'Geométrica' if method == 'geometric' else 'Min-Cut Híbrido'} | Buffer = {args.buffer_km:.1f} km)",
+            header_style="bold red"
+        )
         b_table.add_column("ID", justify="center", style="bold")
         b_table.add_column("Zona", justify="center")
         b_table.add_column("Tipo de Posto", justify="left")
         b_table.add_column("Local / Entroncamento", justify="left")
         b_table.add_column("Classificação", justify="left")
+        b_table.add_column("Capacidade", justify="center")
         b_table.add_column("Latitude", justify="center")
         b_table.add_column("Longitude", justify="center")
 
@@ -212,6 +307,7 @@ def main():
                 brow.get("barrier_type", "Bloqueio"),
                 brow["road_name"],
                 brow["road_class"],
+                f"{float(brow.get('capacity', 1.0)):.1f}",
                 f"{brow['latitude']:.5f}",
                 f"{brow['longitude']:.5f}"
             )
@@ -232,7 +328,7 @@ def main():
     classes_plot_path = os.path.join(args.output_dir, "distribuicao_classes_vias.png")
     plot_barrier_classes(barriers_gdf, save_path=classes_plot_path)
 
-    # 6. Exportar Arquivos
+    # 6. Exportar Arquivos (Shapefiles, GeoJSON, CSV e Relatório Executivo)
     exported = export_analysis_results(
         output_dir=args.output_dir,
         zones_gdf=zones_gdf,
@@ -240,14 +336,21 @@ def main():
         properties_gdf=tagged_props,
         sensitivity_df=sensitivity_df,
         buffer_km=args.buffer_km,
-        edges_gdf=edges_gdf
+        edges_gdf=edges_gdf,
+        comparison_stats=comparison_stats,
+        barriers_geom_gdf=barriers_geom,
+        barriers_mincut_gdf=barriers_mincut,
+        method=method,
+        tolerance_km=args.tolerance_km
     )
 
     console.print(Panel.fit(
-        f"[bold green]✔ Alocação por Min-Cut / Max-Flow Finalizada![/bold green]\n"
+        f"[bold green]✔ Alocação e Exportação Finalizadas com Sucesso![/bold green]\n"
         f"📁 Diretório: [bold]{args.output_dir}[/bold]\n"
-        f"📄 Relatório: [bold]{exported.get('report_md')}[/bold]\n"
-        f"🌐 Abra [bold]{map_html_path}[/bold] para inspecionar os entroncamentos bloqueados no mapa.",
+        f"📄 Relatório Executivo: [bold]{exported.get('report_md')}[/bold]\n"
+        f"🗺️  Shapefile dos Postos: [bold]{exported.get('barriers_shp')}[/bold]\n"
+        f"🛣️  Shapefile das Vias: [bold]{exported.get('edges_shp')}[/bold]\n"
+        f"🌐 Mapa Interativo: [bold]{map_html_path}[/bold]",
         border_style="green"
     ))
 
