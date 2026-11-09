@@ -42,7 +42,8 @@ Aplicação em Python para determinação geoespacial ótima do número mínimo 
      - `zonas_contencao.shp`: Polígonos coalescidos das zonas de contenção.
    - **GeoJSON e CSV**: `bloqueios_sanitarios.geojson`, `malha_viaria.geojson`, `zonas_contencao.geojson`, `bloqueios_sanitarios.csv`, `propriedades_analisadas.csv` e `analise_sensibilidade_buffers.csv`.
    - **Relatório Executivo em Markdown (`relatorio_executivo.md`)**: Documento completo contendo as estatísticas comparativas (Tabelas 2 e 3), detalhamento por zona, lista de postos com coordenadas/capacidades e arquivos gerados.
-   - **Mapa Interativo Web (Folium / Leaflet)** e **Gráficos em Alta Resolução (PNG)**.
+   - **Mapa Interativo Web (Folium / Leaflet)**: Gera `mapa_bloqueios_mincut.html` (quando `--method min-cut`) ou `mapa_bloqueios_geometrico.html` (quando `--method geometric`), com camadas e legendas ajustadas à estratégia selecionada.
+   - **Gráficos em Alta Resolução (PNG)**: `distribuicao_classes_vias.png` e `curva_sensibilidade_mincut.png` / `curva_sensibilidade_geometrico.png`.
 
 ---
 
@@ -155,13 +156,14 @@ exported = export_analysis_results(
     tolerance_km=1.0
 )
 
-# 6. Gerar mapa interativo
+# 6. Gerar mapa interativo (method='min-cut' ou 'geometric')
 build_interactive_map(
     properties_gdf=tagged_props,
     zones_gdf=zones_gdf,
     barriers_gdf=barriers_mincut,
     edges_gdf=edges_gdf,
-    save_html_path="resultados/mapa_bloqueios_mincut.html"
+    save_html_path="resultados/mapa_bloqueios_mincut.html",
+    method="min-cut"
 )
 ```
 

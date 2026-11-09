@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 def plot_sensitivity_curves(
     sensitivity_df: pd.DataFrame,
     save_path: Optional[str] = None,
-    recommended_radius: Optional[float] = None
+    recommended_radius: Optional[float] = None,
+    method: str = "min-cut"
 ) -> plt.Figure:
     """
     Gera gráfico com curvas de trade-off:
@@ -24,6 +25,7 @@ def plot_sensitivity_curves(
         sensitivity_df: DataFrame gerado por run_sensitivity_analysis.
         save_path: Caminho para salvar a imagem (.png ou .pdf).
         recommended_radius: Raio destacado como cenário recomendado.
+        method: Estratégia principal selecionada ('min-cut' ou 'geometric').
         
     Returns:
         Figura do Matplotlib.
@@ -35,7 +37,7 @@ def plot_sensitivity_curves(
     color_barriers = "#D32F2F"  # Vermelho para barreiras
     color_area = "#1976D2"      # Azul para área
 
-    # Coluna de barreiras (compatibilidade)
+    is_geometric = str(method).lower() in ["geometric", "geom", "geometrico", "geométrica"]
     barriers_col = "num_barreiras_mincut" if "num_barreiras_mincut" in sensitivity_df.columns else "num_barreiras"
 
     lines = []
@@ -43,16 +45,16 @@ def plot_sensitivity_curves(
         line_geom = ax1.plot(
             sensitivity_df["buffer_km"],
             sensitivity_df["num_barreiras_geometrico"],
-            color="#757575",
+            color="#E65100" if is_geometric else "#757575",
             marker="^",
-            linestyle="-.",
-            linewidth=2.0,
-            markersize=6,
+            linestyle="-" if is_geometric else "-.",
+            linewidth=2.5 if is_geometric else 2.0,
+            markersize=7 if is_geometric else 6,
             label="Estratégia Geométrica Convencional"
         )
         lines.extend(line_geom)
 
-    # Curva 1: Número de Bloqueios Min-Cut
+    # Curva Min-Cut
     line1 = ax1.plot(
         sensitivity_df["buffer_km"],
         sensitivity_df[barriers_col],
@@ -60,7 +62,9 @@ def plot_sensitivity_curves(
         marker="o",
         linewidth=2.5,
         markersize=7,
-        label="Min-Cut Híbrido (Proposto)"
+        label="Min-Cut Híbrido (Proposto)" if "num_barreiras_mincut" in sensitivity_df.columns else (
+            "Estratégia Geométrica Convencional" if is_geometric else "Min-Cut Híbrido (Proposto)"
+        )
     )
     lines.extend(line1)
     ax1.set_xlabel("Raio do Buffer em Torno dos Focos (km)", fontsize=12, fontweight="bold", labelpad=10)
@@ -89,10 +93,15 @@ def plot_sensitivity_curves(
     if recommended_radius is not None:
         rec_row = sensitivity_df[sensitivity_df["buffer_km"] == recommended_radius]
         if not rec_row.empty:
+            active_col = (
+                "num_barreiras_geometrico"
+                if (is_geometric and "num_barreiras_geometrico" in sensitivity_df.columns)
+                else barriers_col
+            )
             ax1.axvline(x=recommended_radius, color="#388E3C", linestyle=":", linewidth=2, label=f"Recomendado ({recommended_radius} km)")
             ax1.scatter(
                 [recommended_radius],
-                rec_row[barriers_col],
+                rec_row[active_col],
                 color="#388E3C",
                 s=120,
                 zorder=5
@@ -114,21 +123,32 @@ def plot_sensitivity_curves(
 
 def plot_barrier_classes(
     barriers_gdf: gpd.GeoDataFrame,
-    save_path: Optional[str] = None
+    save_path: Optional[str] = None,
+    method: Optional[str] = None
 ) -> Optional[plt.Figure]:
     """
     Gera gráfico de barras com a distribuição de bloqueios por classe de via.
     """
     if barriers_gdf.empty or "road_class" not in barriers_gdf.columns:
         return None
-        
+
+    if method is None:
+        if "barrier_type" in barriers_gdf.columns:
+            has_mincut = barriers_gdf["barrier_type"].astype(str).str.contains("Min-Cut|Entroncamento").any()
+            is_geometric = not has_mincut
+        else:
+            is_geometric = False
+    else:
+        is_geometric = str(method).lower() in ["geometric", "geom", "geometrico", "geométrica"]
+
+    strategy_label = "Geométrica Convencional" if is_geometric else "Min-Cut Híbrido"
     counts = barriers_gdf["road_class"].value_counts()
     
     fig, ax = plt.subplots(figsize=(8, 4.5), dpi=300)
     colors = ["#C62828", "#E65100", "#F57C00", "#388E3C", "#757575"]
     
     counts.plot(kind="barh", ax=ax, color=colors[:len(counts)], edgecolor="black", alpha=0.85)
-    ax.set_title("Distribuição de Bloqueios por Classe de Via", fontsize=13, fontweight="bold", pad=10)
+    ax.set_title(f"Distribuição de Bloqueios por Classe de Via ({strategy_label})", fontsize=13, fontweight="bold", pad=10)
     ax.set_xlabel("Quantidade de Postos", fontsize=11, fontweight="bold")
     ax.set_ylabel("Classe da Via", fontsize=11, fontweight="bold")
     

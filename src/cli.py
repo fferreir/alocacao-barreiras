@@ -204,8 +204,9 @@ def main():
             )
         console.print(table)
 
-        plot_path = os.path.join(args.output_dir, "curva_sensibilidade_mincut.png")
-        plot_sensitivity_curves(sensitivity_df, save_path=plot_path, recommended_radius=args.buffer_km)
+        sens_plot_name = "curva_sensibilidade_geometrico.png" if method == "geometric" else "curva_sensibilidade_mincut.png"
+        plot_path = os.path.join(args.output_dir, sens_plot_name)
+        plot_sensitivity_curves(sensitivity_df, save_path=plot_path, recommended_radius=args.buffer_km, method=method)
         console.print(f"📊 Gráfico de sensibilidade salvo em: [bold green]{plot_path}[/bold green]")
 
     # 3. Execução do Cenário Selecionado e Comparação (Tabela 2)
@@ -314,19 +315,21 @@ def main():
         console.print(b_table)
 
     # 5. Gerar Mapa Interativo e Gráficos
-    map_html_path = os.path.join(args.output_dir, "mapa_bloqueios_mincut.html")
+    map_filename = "mapa_bloqueios_geometrico.html" if method == "geometric" else "mapa_bloqueios_mincut.html"
+    map_html_path = os.path.join(args.output_dir, map_filename)
     build_interactive_map(
         properties_gdf=tagged_props,
         zones_gdf=zones_gdf,
         barriers_gdf=barriers_gdf,
         edges_gdf=edges_gdf,
         foco_col=args.foco_col,
-        save_html_path=map_html_path
+        save_html_path=map_html_path,
+        method=method
     )
     console.print(f"🗺️  Mapa interativo salvo em: [bold green]{map_html_path}[/bold green]")
 
     classes_plot_path = os.path.join(args.output_dir, "distribuicao_classes_vias.png")
-    plot_barrier_classes(barriers_gdf, save_path=classes_plot_path)
+    plot_barrier_classes(barriers_gdf, save_path=classes_plot_path, method=method)
 
     # 6. Exportar Arquivos (Shapefiles, GeoJSON, CSV e Relatório Executivo)
     exported = export_analysis_results(

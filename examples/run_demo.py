@@ -79,12 +79,14 @@ def run_demo():
         barriers_gdf=barriers_mincut,
         edges_gdf=edges_gdf,
         foco_col="foco",
-        save_html_path=map_path
+        save_html_path=map_path,
+        method="min-cut"
     )
 
     plot_barrier_classes(
         barriers_mincut,
-        save_path=os.path.join(output_dir, "distribuicao_classes_vias.png")
+        save_path=os.path.join(output_dir, "distribuicao_classes_vias.png"),
+        method="min-cut"
     )
 
     exported = export_analysis_results(
