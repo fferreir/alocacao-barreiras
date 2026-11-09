@@ -70,7 +70,7 @@ python3 -m src.cli --input data/propriedades_rurais_exemplo.shp --buffer-km 3.0 
 python3 -m src.cli --input data/propriedades_rurais_exemplo.shp --buffer-km 3.0 --method geometric --output-dir resultados_geometrico
 ```
 
-#### Executar com Análise de Sensibilidade para Raios Específicos (Tabela 3: 3, 5, 7 e 10 km):
+#### Executar com Análise de Sensibilidade para Raios Específicos (3, 5, 7 e 10 km):
 ```bash
 python3 -m src.cli --input data/propriedades_rurais_exemplo.shp --buffer-km 3.0 --sensitivity --radii 3.0 5.0 7.0 10.0 --output-dir resultados
 ```
