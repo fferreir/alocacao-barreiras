@@ -142,6 +142,7 @@ def main():
 
     # 2. Análise de Sensibilidade (se solicitada)
     sensitivity_df = None
+    sensitivity_details = {}
     if args.sensitivity:
         if args.radii:
             radii = sorted(list(set(round(float(x), 2) for x in args.radii)))
@@ -162,7 +163,7 @@ def main():
             def on_progress(current, total, current_r):
                 progress.update(task, completed=current, description=f"[cyan]Avaliando Geométrica vs. Min-Cut para buffer: {current_r:.1f} km...")
                 
-            sensitivity_df, _ = run_sensitivity_analysis(
+            sensitivity_df, sensitivity_details = run_sensitivity_analysis(
                 properties_gdf,
                 buffer_radii_km=radii,
                 tolerance_km=args.tolerance_km,
@@ -212,37 +213,55 @@ def main():
     # 3. Execução do Cenário Selecionado e Comparação (Tabela 2)
     console.print(f"\n[bold green]🚀 Processando Cenário Piloto: Buffer = {args.buffer_km:.1f} km (Tolerância ±{args.tolerance_km:.1f} km)...[/bold green]")
     
-    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console) as progress:
-        t_buf = progress.add_task("[yellow]Gerando zonas de contenção e coalescência espacial...", total=None)
-        zones_gdf, tagged_props = create_infected_zones(properties_gdf, buffer_km=args.buffer_km, foco_col=args.foco_col)
-        progress.update(t_buf, description=f"[green]Zonas criadas: {len(zones_gdf)} cluster(s) de contenção.")
-
-        t_osm = progress.add_task("[yellow]Baixando malha viária OpenStreetMap...", total=None)
-        G, edges_gdf, _ = download_road_network(zones_gdf, network_type=args.network_type, buffer_margin_km=args.tolerance_km + 1.0)
-        progress.update(t_osm, description=f"[green]Malha viária carregada: {len(G.nodes)} nós e {len(G.edges)} vias.")
-
-        t_opt = progress.add_task("[yellow]Avaliando solução Geométrica Convencional e Min-Cut Híbrido...", total=None)
-        comp_res = compare_allocation_strategies(
-            G=G,
-            edges_gdf=edges_gdf,
-            properties_gdf=properties_gdf,
-            zones_gdf=zones_gdf,
-            buffer_km=args.buffer_km,
-            tolerance_km=args.tolerance_km,
-            cut_mode=cut_mode,
-            foco_col=args.foco_col
-        )
-        barriers_geom = comp_res["barriers_geom"]
-        barriers_mincut = comp_res["barriers_mincut"]
-        comparison_stats = comp_res["comparison"]
+    target_r = round(float(args.buffer_km), 2)
+    if target_r in sensitivity_details:
+        cached_sc = sensitivity_details[target_r]
+        G = cached_sc["G"]
+        edges_gdf = cached_sc["edges_gdf"]
+        zones_gdf = cached_sc["zones_gdf"]
+        tagged_props = cached_sc["tagged_props"]
+        barriers_geom = cached_sc["barriers_geom_gdf"]
+        barriers_mincut = cached_sc["barriers_mincut_gdf"]
+        comparison_stats = cached_sc["comparison"]
         barriers_gdf = barriers_geom if method == "geometric" else barriers_mincut
-        progress.update(
-            t_opt,
-            description=(
-                f"[green]Otimização concluída: Geométrica = {len(barriers_geom)} postos | "
-                f"Min-Cut = {len(barriers_mincut)} postos ({comparison_stats['reducao_postos_pct']:+.1f}%)."
-            )
+        console.print(
+            f"[green]✔ Zonas criadas: {len(zones_gdf)} cluster(s) de contenção.[/green]\n"
+            f"[green]✔ Malha viária carregada: {len(G.nodes)} nós e {len(G.edges)} vias.[/green]\n"
+            f"[green]✔ Otimização concluída: Geométrica = {len(barriers_geom)} postos | "
+            f"Min-Cut = {len(barriers_mincut)} postos ({comparison_stats['reducao_postos_pct']:+.1f}%).[/green]"
         )
+    else:
+        with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console) as progress:
+            t_buf = progress.add_task("[yellow]Gerando zonas de contenção e coalescência espacial...", total=None)
+            zones_gdf, tagged_props = create_infected_zones(properties_gdf, buffer_km=args.buffer_km, foco_col=args.foco_col)
+            progress.update(t_buf, description=f"[green]Zonas criadas: {len(zones_gdf)} cluster(s) de contenção.")
+
+            t_osm = progress.add_task("[yellow]Baixando malha viária OpenStreetMap...", total=None)
+            G, edges_gdf, _ = download_road_network(zones_gdf, network_type=args.network_type, buffer_margin_km=args.tolerance_km + 1.0)
+            progress.update(t_osm, description=f"[green]Malha viária carregada: {len(G.nodes)} nós e {len(G.edges)} vias.")
+
+            t_opt = progress.add_task("[yellow]Avaliando solução Geométrica Convencional e Min-Cut Híbrido...", total=None)
+            comp_res = compare_allocation_strategies(
+                G=G,
+                edges_gdf=edges_gdf,
+                properties_gdf=properties_gdf,
+                zones_gdf=zones_gdf,
+                buffer_km=args.buffer_km,
+                tolerance_km=args.tolerance_km,
+                cut_mode=cut_mode,
+                foco_col=args.foco_col
+            )
+            barriers_geom = comp_res["barriers_geom"]
+            barriers_mincut = comp_res["barriers_mincut"]
+            comparison_stats = comp_res["comparison"]
+            barriers_gdf = barriers_geom if method == "geometric" else barriers_mincut
+            progress.update(
+                t_opt,
+                description=(
+                    f"[green]Otimização concluída: Geométrica = {len(barriers_geom)} postos | "
+                    f"Min-Cut = {len(barriers_mincut)} postos ({comparison_stats['reducao_postos_pct']:+.1f}%)."
+                )
+            )
 
     # 3.1. Exibir Tabela 2: Indicadores de Desempenho Computacional e Logístico
     g_st = comparison_stats["geometric"]

@@ -124,22 +124,34 @@ def allocate_barriers_min_cut(
 
         # Classificar nós:
         # Inner: TODOS os nós dentro do polígono de buffer base da zona infectada
-        # Outer: Nós fora do polígono expandido
-        # Band: Nós intermediários entre o buffer base e o expandido
+        # Band: Nós intermediários entre o buffer base e o polígono expandido
+        # All Outer: Todos os nós fora do polígono expandido
         inner_nodes = set()
-        outer_nodes = set()
         band_nodes = set()
+        all_outer_nodes = set()
 
         for node_id, geom in node_series_proj.items():
-            if not expanded_poly.buffer(3000.0).contains(geom):
-                continue
-                
             if zone_poly.contains(geom):
                 inner_nodes.add(node_id)
-            elif not expanded_poly.contains(geom):
-                outer_nodes.add(node_id)
-            else:
+            elif expanded_poly.contains(geom):
                 band_nodes.add(node_id)
+            else:
+                all_outer_nodes.add(node_id)
+
+        # Nós externos relevantes para o grafo de fluxo:
+        # Qualquer nó fora de expanded_poly que esteja dentro da margem de 3km
+        # OU que possua aresta direta conectada a inner_nodes ou band_nodes (evita vazamento por arestas longas)
+        core_nodes = inner_nodes | band_nodes
+        outer_buffer_poly = expanded_poly.buffer(3000.0)
+        outer_nodes = {
+            node_id for node_id in all_outer_nodes
+            if outer_buffer_poly.contains(node_series_proj[node_id])
+        }
+        for u, v in G.edges():
+            if u in core_nodes and v in all_outer_nodes:
+                outer_nodes.add(v)
+            elif v in core_nodes and u in all_outer_nodes:
+                outer_nodes.add(u)
 
         logger.info(
             f"[{zone_id}] Nós classificados: {len(inner_nodes)} internos (dentro do buffer), "
@@ -417,37 +429,59 @@ def find_unblocked_escape_paths(
         
         if comp_inner and comp_outer:
             subg = G_test.subgraph(comp)
+            aux_G = nx.DiGraph()
+            S_NODE = "__ESC_SOURCE__"
+            T_NODE = "__ESC_SINK__"
+            INF_C = 1000000.0
+            for u_in in comp_inner:
+                aux_G.add_edge(S_NODE, u_in, capacity=INF_C)
+            for v_out in comp_outer:
+                aux_G.add_edge(v_out, T_NODE, capacity=INF_C)
             for u, v, edata in subg.edges(data=True):
+                cap = get_highway_capacity(edata.get("highway", "unclassified"))
+                aux_G.add_edge(u, v, capacity=cap)
+                aux_G.add_edge(v, u, capacity=cap)
+
+            try:
+                _, (reach_set, non_reach_set) = nx.minimum_cut(aux_G, S_NODE, T_NODE)
+                residual_cut_edges = [
+                    (u, v, subg[u][v])
+                    for u, v in subg.edges()
+                    if (u in reach_set and v in non_reach_set) or (v in reach_set and u in non_reach_set)
+                ]
+            except Exception:
+                residual_cut_edges = list(subg.edges(data=True))
+
+            for u, v, edata in residual_cut_edges:
                 pair = tuple(sorted([u, v]))
                 if pair in visited_pairs:
                     continue
-                    
+                visited_pairs.add(pair)
+
                 p1 = node_series_proj[u]
                 p2 = node_series_proj[v]
-                
+
                 if "geometry" in edata:
                     geom_wgs = edata["geometry"]
                     line = gpd.GeoSeries([geom_wgs], crs="EPSG:4326").to_crs(node_series_proj.crs).iloc[0]
                 else:
                     line = LineString([p1, p2])
-                
-                if line.intersects(zone_boundary):
-                    visited_pairs.add(pair)
-                    inter = line.intersection(zone_boundary)
-                    pt = inter if isinstance(inter, Point) else Point(line.interpolate(0.5, normalized=True))
-                    pt_wgs = gpd.GeoSeries([pt], crs=node_series_proj.crs).to_crs(epsg=4326).iloc[0]
-                    
-                    hw = edata.get("highway", "unclassified")
-                    name = edata.get("name", None)
-                    
-                    escape_records.append({
-                        "road_name": extract_road_name(name),
-                        "road_class": classify_highway_type(hw),
-                        "highway": str(hw) if not isinstance(hw, list) else str(hw[0]),
-                        "latitude": round(pt_wgs.y, 6),
-                        "longitude": round(pt_wgs.x, 6),
-                        "geometry": pt
-                    })
+
+                inter = line.intersection(zone_boundary) if line.intersects(zone_boundary) else Point()
+                pt = inter if isinstance(inter, Point) and not inter.is_empty else Point(line.interpolate(0.5, normalized=True))
+                pt_wgs = gpd.GeoSeries([pt], crs=node_series_proj.crs).to_crs(epsg=4326).iloc[0]
+
+                hw = edata.get("highway", "unclassified")
+                name = edata.get("name", None)
+
+                escape_records.append({
+                    "road_name": extract_road_name(name),
+                    "road_class": classify_highway_type(hw),
+                    "highway": str(hw) if not isinstance(hw, list) else str(hw[0]),
+                    "latitude": round(pt_wgs.y, 6),
+                    "longitude": round(pt_wgs.x, 6),
+                    "geometry": pt
+                })
 
     return escape_records
 

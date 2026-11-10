@@ -47,6 +47,8 @@ def run_sensitivity_analysis(
     Returns:
         Tupla com resumo tabular e resultados detalhados por raio.
     """
+    from shapely.geometry import Point
+
     sorted_radii = sorted(list(set(buffer_radii_km)))
     max_radius = sorted_radii[-1] + tolerance_km
     
@@ -59,6 +61,10 @@ def run_sensitivity_analysis(
         G = cached_graph
         nodes_gdf, edges_gdf = ox_gdfs_from_graph(G)
         edges_gdf = ensure_edge_geometries(edges_gdf, nodes_gdf)
+
+    metric_crs = properties_gdf.estimate_utm_crs() if not properties_gdf.crs.is_projected else properties_gdf.crs
+    node_points_wgs = {n: Point(data["x"], data["y"]) for n, data in G.nodes(data=True)}
+    node_series_proj = gpd.GeoSeries(node_points_wgs, crs="EPSG:4326").to_crs(metric_crs) if len(G) > 0 else gpd.GeoSeries([], crs=metric_crs)
 
     results_table: List[Dict[str, Any]] = []
     detailed_results: Dict[float, Dict[str, Any]] = {}
@@ -74,17 +80,38 @@ def run_sensitivity_analysis(
         
         # Gerar zonas
         zones_gdf, tagged_props = create_infected_zones(properties_gdf, buffer_km=r, foco_col=foco_col)
+
+        # Recortar o grafo para a vizinhança do raio atual (r + tolerance_km + 1.0 km),
+        # garantindo total equivalência com a execução individual do cenário piloto
+        if not zones_gdf.empty and len(G) > 0:
+            zones_proj = zones_gdf.to_crs(metric_crs)
+            local_poly = zones_proj.unary_union.buffer((tolerance_km + 1.0) * 1000.0)
+            local_nodes_set = {n for n, pt in node_series_proj.items() if local_poly.contains(pt)}
+            if len(local_nodes_set) > 0 and len(local_nodes_set) < len(G):
+                G_r = G.subgraph(local_nodes_set).copy()
+                if isinstance(edges_gdf.index, pd.MultiIndex):
+                    u_vals = edges_gdf.index.get_level_values(0)
+                    v_vals = edges_gdf.index.get_level_values(1)
+                    edges_r = edges_gdf[u_vals.isin(local_nodes_set) & v_vals.isin(local_nodes_set)]
+                else:
+                    edges_r = edges_gdf
+            else:
+                G_r = G
+                edges_r = edges_gdf
+        else:
+            G_r = G
+            edges_r = edges_gdf
         
         # 1. Estratégia Geométrica Convencional
         t0_g = time.perf_counter()
-        barriers_geom = allocate_barriers(edges_gdf=edges_gdf, zones_gdf=zones_gdf)
+        barriers_geom = allocate_barriers(edges_gdf=edges_r, zones_gdf=zones_gdf)
         t_geom = time.perf_counter() - t0_g
         stats_geom = compute_solution_stats(barriers_geom, elapsed_time_s=t_geom)
 
         # 2. Alocar barreiras via Min-Cut Max-Flow Híbrido
         t0_mc = time.perf_counter()
         barriers_mincut = allocate_barriers_min_cut(
-            G=G,
+            G=G_r,
             properties_gdf=properties_gdf,
             zones_gdf=zones_gdf,
             buffer_km=r,
@@ -131,12 +158,23 @@ def run_sensitivity_analysis(
         }
         
         results_table.append(record)
+        comparison_r = {
+            "buffer_km": r,
+            "tolerance_km": tolerance_km,
+            "geometric": stats_geom,
+            "mincut": stats_mc,
+            "reducao_postos_pct": round(reducao_pct, 1),
+            "reducao_custo_pct": round(reducao_custo_pct, 1)
+        }
         detailed_results[r] = {
+            "G": G_r,
+            "edges_gdf": edges_r,
             "zones_gdf": zones_gdf,
             "tagged_props": tagged_props,
             "barriers_gdf": barriers_geom if cut_mode in ["geometric", "geom"] else barriers_mincut,
             "barriers_geom_gdf": barriers_geom,
             "barriers_mincut_gdf": barriers_mincut,
+            "comparison": comparison_r,
             "metrics": record
         }
 
