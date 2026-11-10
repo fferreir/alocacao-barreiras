@@ -8,62 +8,62 @@ ZONA_01,Entroncamento Estratégico (Min-Cut),unclassified,Entroncamento: Entronc
 ZONA_01,Via Direta / Estrangulamento (Min-Cut),residential,Estrada Municipal Santa Isabel,Estrada Municipal / Acesso Local,2,1.0,BLOQ_007,-22.749404,-47.529778
 ZONA_01,Via Direta / Estrangulamento (Min-Cut),unclassified,Acesso Rural Sem Nome,Estrada Municipal / Acesso Local,2,1.0,BLOQ_008,-22.806418,-47.489943
 ZONA_02,Entroncamento Estratégico (Min-Cut),primary_link,Entroncamento: Rodovia Cornélio Pires,Rodovia Principal / Federal / Estadual,3,1.0,BLOQ_009,-22.758867,-47.645532
-ZONA_02,Entroncamento Estratégico (Min-Cut),service,Entroncamento: Rodovia Geraldo de Barros,Estrada Rural / Vicinal / Servidão,4,1.0,BLOQ_010,-22.685778,-47.674067
+ZONA_02,Entroncamento Estratégico (Min-Cut),trunk,Entroncamento: Rodovia Geraldo de Barros,Rodovia Principal / Federal / Estadual,4,1.0,BLOQ_010,-22.685778,-47.674067
 ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rodovia Geraldo de Barros & Rua José Zagueti,Estrada Municipal / Acesso Local,4,1.0,BLOQ_011,-22.686652,-47.671016
 ZONA_02,Entroncamento Estratégico (Min-Cut),motorway,Entroncamento: Rodovia Deputado Laércio Corte,Rodovia Principal / Federal / Estadual,4,1.0,BLOQ_012,-22.698641,-47.593551
 ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Alameda Antônio Cominetti,Estrada Municipal / Acesso Local,3,1.0,BLOQ_013,-22.72879,-47.675913
-ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua João Crisóstomo & Rua Dom Manoel,Estrada Municipal / Acesso Local,6,1.0,BLOQ_014,-22.743695,-47.660196
-ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary_link,Entroncamento: Avenida Francisco Luiz Rasera,Estrada Secundária / Coletora,4,1.0,BLOQ_015,-22.763695,-47.637914
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Dom Manoel & Rua João Crisóstomo,Estrada Municipal / Acesso Local,6,1.0,BLOQ_014,-22.743695,-47.660196
+ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Avenida Francisco Luiz Rasera,Estrada Secundária / Coletora,4,1.0,BLOQ_015,-22.763695,-47.637914
 ZONA_02,Entroncamento Estratégico (Min-Cut),secondary,Entroncamento: Avenida Pompéia,Estrada Secundária / Coletora,6,1.0,BLOQ_016,-22.754387,-47.609115
 ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Itatiaia & Rua Ingá,Estrada Municipal / Acesso Local,6,1.0,BLOQ_017,-22.752497,-47.653678
-ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Avenida dos Marins & Avenida Jaime Pereira,Estrada Secundária / Coletora,3,1.0,BLOQ_018,-22.723724,-47.671329
-ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Yukie Takaki & Rua João da Cunha Raposo & Rua Nair Bertolotti Stocco,Estrada Municipal / Acesso Local,7,1.0,BLOQ_019,-22.762659,-47.624743
+ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Avenida Jaime Pereira & Avenida dos Marins,Estrada Secundária / Coletora,3,1.0,BLOQ_018,-22.723724,-47.671329
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua João da Cunha Raposo & Rua Yukie Takaki & Rua Nair Bertolotti Stocco,Estrada Municipal / Acesso Local,7,1.0,BLOQ_019,-22.762659,-47.624743
 ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Avenida Engenheiro Alberto Morato Krahenbuhl,Estrada Municipal / Acesso Local,3,1.0,BLOQ_020,-22.731732,-47.672589
 ZONA_02,Entroncamento Estratégico (Min-Cut),primary_link,Entroncamento: Rodovia Margarida das Graças Martins,Rodovia Principal / Federal / Estadual,5,1.0,BLOQ_021,-22.741048,-47.585877
 ZONA_02,Entroncamento Estratégico (Min-Cut),secondary,Entroncamento: Avenida Jaime Pereira & Rotatória Oswaldo Eleutherio,Estrada Secundária / Coletora,5,1.0,BLOQ_022,-22.700336,-47.675588
-ZONA_02,Entroncamento Estratégico (Min-Cut),motorway_link,Entroncamento: Rodovia Ernesto Paterniani,Rodovia Principal / Federal / Estadual,3,1.0,BLOQ_023,-22.678336,-47.596708
-ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Abdo Maluf & Rua Marilice Rodrigues da Silva Pinto,Estrada Municipal / Acesso Local,5,1.0,BLOQ_024,-22.756179,-47.649795
+ZONA_02,Entroncamento Estratégico (Min-Cut),motorway,Entroncamento: Rodovia Ernesto Paterniani,Rodovia Principal / Federal / Estadual,3,1.0,BLOQ_023,-22.678336,-47.596708
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Marilice Rodrigues da Silva Pinto & Rua Abdo Maluf,Estrada Municipal / Acesso Local,5,1.0,BLOQ_024,-22.756179,-47.649795
 ZONA_02,Entroncamento Estratégico (Min-Cut),track,Entroncamento: Entroncamento Rural,Estrada Rural / Vicinal / Servidão,8,1.0,BLOQ_025,-22.675258,-47.648229
-ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Rua da Liberdade & Rua Padre Antonio Vieira & Rua Dona Anésia,Estrada Secundária / Coletora,5,1.0,BLOQ_026,-22.741065,-47.666611
-ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Cláudio Roberto Dal Piccolo & Rua João Tedesco,Estrada Municipal / Acesso Local,6,1.0,BLOQ_027,-22.76151,-47.621912
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Dona Anésia & Rua Padre Antonio Vieira & Rua da Liberdade,Estrada Municipal / Acesso Local,5,1.0,BLOQ_026,-22.741065,-47.666611
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua João Tedesco & Rua Cláudio Roberto Dal Piccolo,Estrada Municipal / Acesso Local,6,1.0,BLOQ_027,-22.76151,-47.621912
 ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Doutor Alexandre Guimarães dos Santos,Estrada Municipal / Acesso Local,4,1.0,BLOQ_028,-22.750878,-47.595529
 ZONA_02,Entroncamento Estratégico (Min-Cut),footway,Entroncamento: Avenida Pio Sbrissa,Outras Vias,4,1.0,BLOQ_029,-22.735232,-47.669169
-ZONA_02,Entroncamento Estratégico (Min-Cut),motorway_link,Entroncamento: Rodovia Fausto Santomauro,Rodovia Principal / Federal / Estadual,3,1.0,BLOQ_030,-22.665029,-47.619434
-ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Rua Luiz Totti Filho & Avenida Rio das Pedras,Estrada Secundária / Coletora,4,1.0,BLOQ_031,-22.757022,-47.615026
+ZONA_02,Entroncamento Estratégico (Min-Cut),motorway,Entroncamento: Rodovia Fausto Santomauro,Rodovia Principal / Federal / Estadual,3,1.0,BLOQ_030,-22.665029,-47.619434
+ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Avenida Rio das Pedras & Rua Luiz Totti Filho,Estrada Secundária / Coletora,4,1.0,BLOQ_031,-22.757022,-47.615026
 ZONA_02,Entroncamento Estratégico (Min-Cut),primary,Entroncamento: Avenida Raposo Tavares,Rodovia Principal / Federal / Estadual,4,1.0,BLOQ_032,-22.748454,-47.656801
 ZONA_02,Entroncamento Estratégico (Min-Cut),motorway,Entroncamento: Rodovia Comendador Mário Dedini,Rodovia Principal / Federal / Estadual,3,1.0,BLOQ_033,-22.753204,-47.598067
 ZONA_02,Entroncamento Estratégico (Min-Cut),track,Entroncamento: Entroncamento Rural,Estrada Rural / Vicinal / Servidão,6,1.0,BLOQ_034,-22.671301,-47.64554
 ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Via Comendador Pedro Morganti,Estrada Secundária / Coletora,6,1.0,BLOQ_035,-22.703595,-47.590468
 ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Estrada Antônio Abdalla,Estrada Secundária / Coletora,6,1.0,BLOQ_036,-22.76029,-47.644539
-ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Rua José Antônio Tricânico & Estrada Genoveva Nasato Formággio,Estrada Secundária / Coletora,5,1.0,BLOQ_037,-22.749676,-47.592591
+ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Estrada Genoveva Nasato Formággio & Rua José Antônio Tricânico,Estrada Secundária / Coletora,5,1.0,BLOQ_037,-22.749676,-47.592591
 ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Avenida Brasília & Rua Silveira Sampaio,Estrada Municipal / Acesso Local,5,1.0,BLOQ_038,-22.68767,-47.665537
 ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Itatiaia & Rua João Gimenez,Estrada Municipal / Acesso Local,6,1.0,BLOQ_039,-22.752925,-47.652624
-ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rotatória Oswaldo Eleutherio & Avenida das Ondas,Estrada Municipal / Acesso Local,3,1.0,BLOQ_040,-22.699937,-47.67554
-ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Rua Benjamin Constant & Rua Professor Antonio dos Santos Veiga & Rua Infante Dom Henrique,Estrada Secundária / Coletora,6,1.0,BLOQ_041,-22.746939,-47.657061
-ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Antonio Cobra Filho & Rotatória Ubiracy de Jesus Sanches,Estrada Municipal / Acesso Local,4,1.0,BLOQ_042,-22.685498,-47.673477
-ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,"Entroncamento: Rua Moysés de Castro, Rua Eduardo Pavan Facco & Avenida Luiz Pereira Leite",Estrada Secundária / Coletora,4,1.0,BLOQ_043,-22.757967,-47.630362
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Avenida das Ondas & Rotatória Oswaldo Eleutherio,Estrada Municipal / Acesso Local,3,1.0,BLOQ_040,-22.699937,-47.67554
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Infante Dom Henrique & Rua Professor Antonio dos Santos Veiga & Rua Benjamin Constant,Estrada Municipal / Acesso Local,6,1.0,BLOQ_041,-22.746939,-47.657061
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rotatória Ubiracy de Jesus Sanches & Rua Antonio Cobra Filho,Estrada Municipal / Acesso Local,4,1.0,BLOQ_042,-22.685498,-47.673477
+ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,"Entroncamento: Rua Eduardo Pavan Facco, Rua Moysés de Castro & Avenida Luiz Pereira Leite",Estrada Secundária / Coletora,4,1.0,BLOQ_043,-22.757967,-47.630362
 ZONA_02,Entroncamento Estratégico (Min-Cut),unclassified,Entroncamento: Estrada Municipal Pir 009 N,Estrada Municipal / Acesso Local,4,1.0,BLOQ_044,-22.662903,-47.618492
 ZONA_02,Entroncamento Estratégico (Min-Cut),track,Entroncamento: Rua Alberto Coral,Estrada Rural / Vicinal / Servidão,6,1.0,BLOQ_045,-22.675303,-47.652793
 ZONA_02,Entroncamento Estratégico (Min-Cut),primary,Entroncamento: Rodovia Cornélio Pires,Rodovia Principal / Federal / Estadual,3,1.0,BLOQ_046,-22.758276,-47.645926
 ZONA_02,Entroncamento Estratégico (Min-Cut),secondary_link,Entroncamento: Entroncamento Rural,Estrada Secundária / Coletora,4,1.0,BLOQ_047,-22.7371,-47.66818
 ZONA_02,Entroncamento Estratégico (Min-Cut),secondary_link,Entroncamento: Avenida Comendador Leopoldo Dedini,Estrada Secundária / Coletora,5,1.0,BLOQ_048,-22.718537,-47.582674
 ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Avenida Uriel Odas,Estrada Municipal / Acesso Local,3,1.0,BLOQ_049,-22.727822,-47.675806
-ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary_link,Entroncamento: Avenida Luiz Pereira Leite,Estrada Secundária / Coletora,3,1.0,BLOQ_050,-22.75836,-47.630002
-ZONA_02,Entroncamento Estratégico (Min-Cut),secondary,Entroncamento: Rotatória Ubiracy de Jesus Sanches,Estrada Secundária / Coletora,3,1.0,BLOQ_051,-22.685555,-47.673066
+ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Avenida Luiz Pereira Leite,Estrada Secundária / Coletora,3,1.0,BLOQ_050,-22.75836,-47.630002
+ZONA_02,Entroncamento Estratégico (Min-Cut),trunk_link,Entroncamento: Rotatória Ubiracy de Jesus Sanches,Rodovia Principal / Federal / Estadual,3,1.0,BLOQ_051,-22.685555,-47.673066
 ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua José Mendes & Rua Professor Luiz Gonzaga Engelberg Nordello,Estrada Municipal / Acesso Local,6,1.0,BLOQ_052,-22.762284,-47.623024
-ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Dona Stella & Rua José Assad Helal,Estrada Municipal / Acesso Local,8,1.0,BLOQ_053,-22.75391,-47.652345
-ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Cananéia & Rua Abdo Maluf & Rua José Assad Helal,Estrada Municipal / Acesso Local,6,1.0,BLOQ_054,-22.753831,-47.64999
-ZONA_02,Entroncamento Estratégico (Min-Cut),motorway_link,Entroncamento: Rodovia Ernesto Paterniani,Rodovia Principal / Federal / Estadual,3,1.0,BLOQ_055,-22.666277,-47.606022
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua José Assad Helal & Rua Dona Stella,Estrada Municipal / Acesso Local,8,1.0,BLOQ_053,-22.75391,-47.652345
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Abdo Maluf & Rua José Assad Helal & Rua Cananéia,Estrada Municipal / Acesso Local,6,1.0,BLOQ_054,-22.753831,-47.64999
+ZONA_02,Entroncamento Estratégico (Min-Cut),motorway,Entroncamento: Rodovia Ernesto Paterniani,Rodovia Principal / Federal / Estadual,3,1.0,BLOQ_055,-22.666277,-47.606022
 ZONA_02,Entroncamento Estratégico (Min-Cut),footway,Entroncamento: Avenida Abel Francisco Pereira,Outras Vias,4,1.0,BLOQ_056,-22.740253,-47.668878
 ZONA_02,Entroncamento Estratégico (Min-Cut),track,Entroncamento: Entroncamento Rural,Estrada Rural / Vicinal / Servidão,8,1.0,BLOQ_057,-22.673411,-47.645187
 ZONA_02,Entroncamento Estratégico (Min-Cut),secondary_link,Entroncamento: Avenida Jaime Pereira,Estrada Secundária / Coletora,3,1.0,BLOQ_058,-22.724086,-47.670556
-ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Itatiaia & Rua João Ramalho,Estrada Municipal / Acesso Local,6,1.0,BLOQ_059,-22.752181,-47.654271
-ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary_link,Entroncamento: Avenida Francisco Luiz Rasera,Estrada Secundária / Coletora,3,1.0,BLOQ_060,-22.762335,-47.637102
-ZONA_02,Entroncamento Estratégico (Min-Cut),unclassified,Entroncamento: Avenida Doutor Alexandre Guimarães dos Santos & Rua Waldemar Rodrigues & Avenida Irmã Maria Felicíssima,Estrada Municipal / Acesso Local,6,1.0,BLOQ_061,-22.753237,-47.59761
-ZONA_02,Entroncamento Estratégico (Min-Cut),motorway,Entroncamento: Rodovia do Açúcar & Avenida Irmã Maria Felicíssima,Rodovia Principal / Federal / Estadual,3,1.0,BLOQ_062,-22.753669,-47.59782
-ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Rua Honorato Faustino & Rua Monte Pascoal,Estrada Secundária / Coletora,4,1.0,BLOQ_063,-22.74773,-47.656778
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua João Ramalho & Rua Itatiaia,Estrada Municipal / Acesso Local,6,1.0,BLOQ_059,-22.752181,-47.654271
+ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Avenida Francisco Luiz Rasera,Estrada Secundária / Coletora,3,1.0,BLOQ_060,-22.762335,-47.637102
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Waldemar Rodrigues & Avenida Irmã Maria Felicíssima & Avenida Doutor Alexandre Guimarães dos Santos,Estrada Municipal / Acesso Local,6,1.0,BLOQ_061,-22.753237,-47.59761
+ZONA_02,Entroncamento Estratégico (Min-Cut),motorway,Entroncamento: Avenida Irmã Maria Felicíssima & Rodovia do Açúcar,Rodovia Principal / Federal / Estadual,3,1.0,BLOQ_062,-22.753669,-47.59782
+ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Monte Pascoal & Rua Honorato Faustino,Estrada Municipal / Acesso Local,4,1.0,BLOQ_063,-22.74773,-47.656778
 ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Vitório Magossi,Estrada Municipal / Acesso Local,6,1.0,BLOQ_064,-22.763365,-47.638955
-ZONA_02,Entroncamento Estratégico (Min-Cut),primary_link,Entroncamento: Avenida Madre Maria Teodora & Rua Professor Antonio Pinto de Almeida Ferraz,Rodovia Principal / Federal / Estadual,4,1.0,BLOQ_065,-22.740364,-47.668416
+ZONA_02,Entroncamento Estratégico (Min-Cut),tertiary,Entroncamento: Avenida Madre Maria Teodora & Rua Professor Antonio Pinto de Almeida Ferraz,Estrada Secundária / Coletora,4,1.0,BLOQ_065,-22.740364,-47.668416
 ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Dom Manoel & Rua Professor Arthur Madeira,Estrada Municipal / Acesso Local,8,1.0,BLOQ_066,-22.743205,-47.661654
 ZONA_02,Entroncamento Estratégico (Min-Cut),track,Entroncamento: Estrada Heribaldo Zardetto de Toledo,Estrada Rural / Vicinal / Servidão,6,1.0,BLOQ_067,-22.664354,-47.637098
 ZONA_02,Entroncamento Estratégico (Min-Cut),residential,Entroncamento: Rua Iguatemi & Rua Amador Bueno,Estrada Municipal / Acesso Local,5,1.0,BLOQ_068,-22.749305,-47.65654
