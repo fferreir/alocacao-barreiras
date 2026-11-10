@@ -216,3 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Resultado
+cache/
+resultados/
+output_demo/
+output_mincut_demo/
