@@ -40,8 +40,8 @@ def run_demo():
     print(f" -> Zonas geradas: {len(zones_gdf)} cluster(s) de contenção.")
 
     # 3. Baixar Malha Viária
-    print("\n[3/5] Baixando malha viária do OpenStreetMap com margem de tolerância...")
-    G, edges_gdf, _ = download_road_network(zones_gdf, network_type="all", buffer_margin_km=tolerance_km + 1.0)
+    print("\n[3/5] Baixando malha viária do OpenStreetMap com margem de tolerância e ancoragem...")
+    G, edges_gdf, _ = download_road_network(zones_gdf, network_type="all", buffer_margin_km=tolerance_km + 3.0)
     print(f" -> Grafo viário: {len(G.nodes)} nós e {len(G.edges)} vias.")
 
     # 4. Comparação: Corte de Fronteira Geométrico vs. Min-Cut Híbrido

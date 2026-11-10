@@ -52,11 +52,11 @@ def run_sensitivity_analysis(
     sorted_radii = sorted(list(set(buffer_radii_km)))
     max_radius = sorted_radii[-1] + tolerance_km
     
-    # 1. Baixar malha viária com margem abrangendo o maior raio + tolerância
+    # 1. Baixar malha viária com margem abrangendo o maior raio + tolerância + 3.0 km de ancoragem externa
     if cached_graph is None or len(cached_graph) == 0:
-        logger.info(f"Baixando malha viária cobrindo o raio máximo expandido ({max_radius:.1f} km)...")
+        logger.info(f"Baixando malha viária cobrindo o raio máximo expandido ({max_radius:.1f} km + 3.0 km de ancoragem)...")
         max_zones, _ = create_infected_zones(properties_gdf, buffer_km=max_radius, foco_col=foco_col)
-        G, edges_gdf, _ = download_road_network(max_zones, network_type=network_type, buffer_margin_km=2.0)
+        G, edges_gdf, _ = download_road_network(max_zones, network_type=network_type, buffer_margin_km=3.0)
     else:
         G = cached_graph
         nodes_gdf, edges_gdf = ox_gdfs_from_graph(G)
@@ -81,12 +81,19 @@ def run_sensitivity_analysis(
         # Gerar zonas
         zones_gdf, tagged_props = create_infected_zones(properties_gdf, buffer_km=r, foco_col=foco_col)
 
-        # Recortar o grafo para a vizinhança do raio atual (r + tolerance_km + 1.0 km),
-        # garantindo total equivalência com a execução individual do cenário piloto
+        # Recortar o grafo para a vizinhança do raio atual (r + tolerance_km + 3.0 km de ancoragem),
+        # preservando nós de borda conectados (truncate_by_edge) para equivalência com o cenário piloto
         if not zones_gdf.empty and len(G) > 0:
             zones_proj = zones_gdf.to_crs(metric_crs)
-            local_poly = zones_proj.unary_union.buffer((tolerance_km + 1.0) * 1000.0)
-            local_nodes_set = {n for n, pt in node_series_proj.items() if local_poly.contains(pt)}
+            local_poly = zones_proj.unary_union.buffer((tolerance_km + 3.0) * 1000.0)
+            inside_nodes = {n for n, pt in node_series_proj.items() if local_poly.contains(pt)}
+            boundary_neighbors = set()
+            for u, v in G.edges():
+                if u in inside_nodes and v not in inside_nodes:
+                    boundary_neighbors.add(v)
+                elif v in inside_nodes and u not in inside_nodes:
+                    boundary_neighbors.add(u)
+            local_nodes_set = inside_nodes | boundary_neighbors
             if len(local_nodes_set) > 0 and len(local_nodes_set) < len(G):
                 G_r = G.subgraph(local_nodes_set).copy()
                 if isinstance(edges_gdf.index, pd.MultiIndex):

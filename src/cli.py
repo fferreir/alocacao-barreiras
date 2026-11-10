@@ -237,7 +237,7 @@ def main():
             progress.update(t_buf, description=f"[green]Zonas criadas: {len(zones_gdf)} cluster(s) de contenção.")
 
             t_osm = progress.add_task("[yellow]Baixando malha viária OpenStreetMap...", total=None)
-            G, edges_gdf, _ = download_road_network(zones_gdf, network_type=args.network_type, buffer_margin_km=args.tolerance_km + 1.0)
+            G, edges_gdf, _ = download_road_network(zones_gdf, network_type=args.network_type, buffer_margin_km=args.tolerance_km + 3.0)
             progress.update(t_osm, description=f"[green]Malha viária carregada: {len(G.nodes)} nós e {len(G.edges)} vias.")
 
             t_opt = progress.add_task("[yellow]Avaliando solução Geométrica Convencional e Min-Cut Híbrido...", total=None)
